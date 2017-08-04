@@ -71,6 +71,7 @@ function DraftStore() {
         return {
           isPrivate: draft.isPrivate,
           tags: draft.tags,
+          type: draft.type,
           text: draft.text,
         };
       }
@@ -96,6 +97,7 @@ function DraftStore() {
       model: {id: model.id, $tag: model.$tag},
       isPrivate: changes.isPrivate,
       tags: changes.tags,
+      type: changes.type,
       text: changes.text,
     };
     this.remove(model);

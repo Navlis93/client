@@ -7,13 +7,16 @@ $ = require('jquery')
 # cssClass - A CSS class to use for the highlight (default: 'annotator-hl')
 #
 # Returns an array of highlight Elements.
-exports.highlightRange = (normedRange, cssClass='annotator-hl') ->
+exports.highlightRange = (normedRange, cssClass='annotator-hl', color='') ->
   white = /^\s*$/
 
   # A custom element name is used here rather than `<span>` to reduce the
+  if color
+    style = "style='background-color: ##{color}'"
+  else
+    style = ''
   # likelihood of highlights being hidden by page styling.
-  hl = $("<hypothesis-highlight class='#{cssClass}'></hypothesis-highlight>")
-
+  hl = $("<hypothesis-highlight class='#{cssClass}' #{style}></hypothesis-highlight>")
   # Ignore text nodes that contain only whitespace characters. This prevents
   # spans being injected between elements that can only contain a restricted
   # subset of nodes such as table rows and lists. This does mean that there

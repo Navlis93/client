@@ -67,6 +67,10 @@ function AnnotationThreadController() {
     };
   };
 
+  this.annotationStyle = function () {
+    return {'background-color': '#' + this.thread.annotation.color};
+  };
+
   /**
    * Show this thread and any of its children
    */

@@ -70,6 +70,19 @@
   </div>
   <!-- / Tags -->
 
+    <!-- Type -->
+  <div class="annotation-body form-field" ng-if="vm.editing()">
+    <type-editor type="vm.state().type"
+                on-edit-type="vm.setType(type)"></type-editor>
+  </div>
+
+  <div class="annotation-body u-layout-row tags tags-read-only"
+       ng-if="vm.editing()">
+    <span>Type: {{ vm.state().type }} ## {{vm.state() }}</span>
+    <div class="u-stretch"></div>
+  </div>
+  <!-- / Type -->
+
   <footer class="annotation-footer">
     <div class="annotation-form-actions" ng-if="vm.editing()">
       <publish-annotation-btn

@@ -248,7 +248,8 @@ module.exports = class Guest extends Delegator
       return animationPromise ->
         range = xpathRange.sniff(anchor.range)
         normedRange = range.normalize(root)
-        highlights = highlighter.highlightRange(normedRange)
+        color = anchor.annotation.color  
+        highlights = highlighter.highlightRange(normedRange,'annotator-hl', color)
 
         $(highlights).data('annotation', anchor.annotation)
         anchor.highlights = highlights

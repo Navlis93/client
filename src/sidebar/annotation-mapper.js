@@ -15,18 +15,42 @@ function getExistingAnnotation(annotationUI, id) {
 function annotationMapper($rootScope, annotationUI, store) {
   function loadAnnotations(annotations, replies) {
     annotations = annotations.concat(replies || []);
-
     var loaded = [];
-    annotations.forEach(function (annotation) {
-      var existing = getExistingAnnotation(annotationUI, annotation.id);
-      if (existing) {
-        $rootScope.$broadcast(events.ANNOTATION_UPDATED, annotation);
-        return;
-      }
-      loaded.push(annotation);
-    });
+    function _load(){
+          annotations.forEach(function (annotation) {
+            if(annotation.type){
+              var type = $rootScope._types[annotation.type];
+              if (type){
+                annotation.color = type.color;
+              }
+            }
+            else{
+              annotation.color = 'ffff77';
+            }
+            var existing = getExistingAnnotation(annotationUI, annotation.id);
+            if (existing) {
+              $rootScope.$broadcast(events.ANNOTATION_UPDATED, annotation);
+              return;
+            }
+            loaded.push(annotation);
+          });
+          $rootScope.$broadcast(events.ANNOTATIONS_LOADED, loaded);
+    }
+    
 
-    $rootScope.$broadcast(events.ANNOTATIONS_LOADED, loaded);
+    if(typeof $rootScope._types === 'undefined'){
+      store.types().then(function(result){
+        $rootScope._types = {}
+        for(var i=0; i < result.length; i++){
+          var type = result[i];
+          $rootScope._types[type.id] = type;
+        }
+        _load()
+        })
+    }else{
+          _load()
+    }
+
   }
 
   function unloadAnnotations(annotations) {

@@ -14,6 +14,7 @@
                        ng-if="vm.thread.annotation">
     </moderation-banner>
     <annotation ng-class="vm.annotationClasses()"
+             ng-style="vm.annotationStyle()"
              annotation="vm.thread.annotation"
              is-collapsed="vm.thread.collapsed"
              name="annotation"

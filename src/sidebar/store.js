@@ -179,6 +179,7 @@ function store($http, $q, auth, settings) {
       update: apiCall('profile.update'),
     },
     links: apiCall('links'),
+    types: apiCall('annotation.types'),
   };
 }
 

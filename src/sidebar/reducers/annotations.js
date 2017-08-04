@@ -247,7 +247,6 @@ function addAnnotations(annotations, now) {
     var added = annotations.filter(function (annot) {
       return !findByID(getState().annotations, annot.id);
     });
-
     dispatch({
       type: actions.ADD_ANNOTATIONS,
       annotations: annotations,
