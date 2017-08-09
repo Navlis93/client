@@ -13,10 +13,11 @@ var isPageNote = annotationMetadata.isPageNote;
  */
 function updateModel(annotation, changes, permissions) {
   var userid = annotation.user;
-
+  console.log("UM", annotation.type_id, changes.type_id);
   return Object.assign({}, annotation, {
     // Apply changes from the draft
     tags: changes.tags,
+    type_id: changes.type_id,
     text: changes.text,
     permissions: changes.isPrivate ?
       permissions.private(userid) : permissions.shared(userid, annotation.group),
@@ -38,6 +39,7 @@ function AnnotationController(
     var updating = !!annot.id;
 
     if (updating) {
+      console.log("Saving", annot.type_id);
       saved = store.annotation.update({id: annot.id}, annot);
     } else {
       saved = store.annotation.create({}, annot);
@@ -132,6 +134,8 @@ function AnnotationController(
         self.edit();
       }
     }
+
+    $scope.data = {annotation_type: self.annotation.type_id}
   }
 
   /** Save this annotation if it's a new highlight.
@@ -395,7 +399,6 @@ function AnnotationController(
     // Optimistically switch back to view mode and display the saving
     // indicator
     self.isSaving = true;
-
     return save(updatedModel).then(function (model) {
       Object.assign(updatedModel, model);
 
@@ -433,6 +436,7 @@ function AnnotationController(
       permissions.setDefault(privacy);
     }
     drafts.update(self.annotation, {
+      type_id: self.state().type_id,
       tags: self.state().tags,
       text: self.state().text,
       isPrivate: privacy === 'private',
@@ -520,6 +524,7 @@ function AnnotationController(
       isPrivate: self.state().isPrivate,
       tags: self.state().tags,
       text: text,
+      type_id: self.state().type_id,
     });
   };
 
@@ -528,22 +533,42 @@ function AnnotationController(
       isPrivate: self.state().isPrivate,
       tags: tags,
       text: self.state().text,
+      type_id: self.state().type_id,
     });
   };
 
   this.state = function () {
     var draft = drafts.get(self.annotation);
     if (draft) {
+      // console.log("State draftaft", draft, self.annotation);
       return draft;
     }
     return {
       tags: self.annotation.tags,
       text: self.annotation.text,
+      type_id: self.annotation.type_id,
       isPrivate: !permissions.isShared(self.annotation.permissions,
                                        self.annotation.user),
     };
   };
 
+  this.getAvailableTypes = function () {
+    return $rootScope._types;
+  }
+
+  $scope.setType = function () {
+    var type_id = $scope.data.annotation_type;
+    drafts.update(self.annotation, {
+      isPrivate: self.state().isPrivate,
+      tags: self.state().tags,
+      text: self.state().text,
+      type_id: type_id,
+    });
+  }
+
+  this.annotationStyle = function () {
+    return {'border-left': '4px solid #' + this.annotation.color};
+  };
   /**
    * Return true if the CC 0 license notice should be shown beneath the
    * annotation body.

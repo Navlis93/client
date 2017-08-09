@@ -23,7 +23,8 @@
       content-data="selector.exact">
       <blockquote class="annotation-quote"
         h-branding="selectionFontFamily"
-        ng-bind="vm.quote()"></blockquote>
+        ng-bind="vm.quote()"
+        ng-style="vm.annotationStyle()"></blockquote>
     </excerpt>
   </section>
 
@@ -72,15 +73,23 @@
 
     <!-- Type -->
   <div class="annotation-body form-field" ng-if="vm.editing()">
-    <type-editor type="vm.state().type"
-                on-edit-type="vm.setType(type)"></type-editor>
+<!--     <type-editor type="vm.state().type"
+                on-edit-type="vm.setType(type)"></type-editor> -->
   </div>
 
   <div class="annotation-body u-layout-row tags tags-read-only"
        ng-if="vm.editing()">
-    <span>Type: {{ vm.state().type }} ## {{vm.state() }}</span>
+    <span>Type: {{ vm.state().type }} ## {{vm.state() }} $$ {{ vm.getAvailableTypes() }}</span>
     <div class="u-stretch"></div>
   </div>
+
+  <select name="repeatSelect"
+          id="repeatSelect"
+          ng-model="data.annotation_type"
+          ng-options="v.id as v.title for (k, v) in vm.getAvailableTypes()"
+          ng-change=setType()>
+     <option value="">Select Type</option>
+  </select>
   <!-- / Type -->
 
   <footer class="annotation-footer">

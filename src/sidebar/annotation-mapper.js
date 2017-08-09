@@ -18,8 +18,8 @@ function annotationMapper($rootScope, annotationUI, store) {
     var loaded = [];
     function _load(){
           annotations.forEach(function (annotation) {
-            if(annotation.type){
-              var type = $rootScope._types[annotation.type];
+            if(annotation.type_id){
+              var type = $rootScope._types[annotation.type_id];
               if (type){
                 annotation.color = type.color;
               }
