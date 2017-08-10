@@ -67,8 +67,8 @@ module.exports = class Guest extends Delegator
 
     self = this
     this.adderCtrl = new adder.Adder(@adder[0], {
-      onAnnotate: (type_id) ->
-        self.createAnnotation({type_id: type_id})
+      onAnnotate: (type_id, color) ->
+        self.createAnnotation({type_id: type_id, color: color})
         document.getSelection().removeAllRanges()
       # onHighlight: ->
       #   self.setVisibleHighlights(true)
