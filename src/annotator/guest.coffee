@@ -55,6 +55,7 @@ module.exports = class Guest extends Delegator
   anchors: null
   visibleHighlights: false
   frameIdentifier: null
+  types: []
 
   html:
     adder: '<hypothesis-adder></hypothesis-adder>'
@@ -66,13 +67,14 @@ module.exports = class Guest extends Delegator
 
     self = this
     this.adderCtrl = new adder.Adder(@adder[0], {
-      onAnnotate: ->
-        self.createAnnotation()
+      onAnnotate: (type_id) ->
+        self.createAnnotation({type_id: type_id})
         document.getSelection().removeAllRanges()
-      onHighlight: ->
-        self.setVisibleHighlights(true)
-        self.createHighlight()
-        document.getSelection().removeAllRanges()
+      # onHighlight: ->
+      #   self.setVisibleHighlights(true)
+      #   self.createHighlight()
+      #   document.getSelection().removeAllRanges()
+      # types: @types
     })
     this.selections = selections(document).subscribe
       next: (range) ->
@@ -156,6 +158,8 @@ module.exports = class Guest extends Delegator
     this.subscribe 'annotationsLoaded', (annotations) =>
       for annotation in annotations
         this.anchor(annotation)
+    this.subscribe 'typesLoaded', (types) =>
+      this.setTypes(types)
 
   _connectAnnotationUISync: (crossframe) ->
     crossframe.on 'focusAnnotations', (tags=[]) =>
@@ -358,7 +362,6 @@ module.exports = class Guest extends Delegator
 
     targets.then(-> self.publish('beforeAnnotationCreated', [annotation]))
     targets.then(-> self.anchor(annotation))
-
     @crossframe?.call('showSidebar') unless annotation.$highlight
     annotation
 
@@ -498,3 +501,8 @@ module.exports = class Guest extends Delegator
       @element.removeClass(SHOW_HIGHLIGHTS_CLASS)
 
     @visibleHighlights = shouldShowHighlights
+
+  setTypes: (types) ->
+    @types = types
+    console.log('SET TYPES', types, @types)
+    this.adderCtrl.setTypes(types)

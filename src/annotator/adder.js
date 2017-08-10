@@ -148,26 +148,37 @@ function Adder(container, options) {
 
   var view = self.element.ownerDocument.defaultView;
   var enterTimeout;
+  
+  // var colorButtons = ""
+  // for(var i = 0; i < options.types.length; i++){
+  //     var type = options.types[i];
+  //     var html = '<button class="annotator-adder-actions__button h-icon-annotate js-annotate-btn" data-type-id="' + type.id + '">'
+  //               +  '<span class="annotator-adder-actions__label" data-action="comment">'+ type.title + '</span>'
+  //               + '</button>';
+  //     colorButtons += html;
+  // }
+  // console.log('HTML', html);
+  // self.element.querySelector('.annotator-adder-actions-color').innerHTML = colorButtons;
 
-  self.element.querySelector(ANNOTATE_BTN_SELECTOR)
-    .addEventListener('click', handleCommand);
-  self.element.querySelector(HIGHLIGHT_BTN_SELECTOR)
-    .addEventListener('click', handleCommand);
+  // // self.element.querySelector(ANNOTATE_BTN_SELECTOR)
+  // //   .addEventListener('click', handleCommand);
+  // // self.element.querySelector(HIGHLIGHT_BTN_SELECTOR)
+  // //   .addEventListener('click', handleCommand);
 
-  function handleCommand(event) {
-    event.preventDefault();
-    event.stopPropagation();
+  // function handleCommand(event) {
+  //   event.preventDefault();
+  //   event.stopPropagation();
 
-    var isAnnotateCommand = this.classList.contains(ANNOTATE_BTN_CLASS);
+  //   var isAnnotateCommand = this.classList.contains(ANNOTATE_BTN_CLASS);
 
-    if (isAnnotateCommand) {
-      options.onAnnotate();
-    } else {
-      options.onHighlight();
-    }
+  //   if (isAnnotateCommand) {
+  //     options.onAnnotate();
+  //   } else {
+  //     options.onHighlight();
+  //   }
 
-    self.hide();
-  }
+  //   self.hide();
+  // }
 
   function width() {
     return self.element.getBoundingClientRect().width;
@@ -260,8 +271,8 @@ function Adder(container, options) {
     // after use. So we need to make sure the button stays displayed
     // the way it was originally displayed - without the inline styles
     // See: https://github.com/hypothesis/client/issues/137
-    self.element.querySelector(ANNOTATE_BTN_SELECTOR).style.display = '';
-    self.element.querySelector(HIGHLIGHT_BTN_SELECTOR).style.display = '';
+    // self.element.querySelector(ANNOTATE_BTN_SELECTOR).style.display = '';
+    // self.element.querySelector(HIGHLIGHT_BTN_SELECTOR).style.display = '';
 
     // Translate the (left, top) viewport coordinates into positions relative to
     // the adder's nearest positioned ancestor (NPA).
@@ -283,6 +294,40 @@ function Adder(container, options) {
       self.element.className += ' is-active';
     }, 1);
   };
+
+  this.setTypes = function (types) {
+    var colorButtons = ""
+    for(var i = 0; i < types.length; i++){
+        var type = types[i];
+        var html = '<button class="annotator-adder-actions__button h-icon-annotate js-annotate-btn" data-type-id="' + type.id + '">'
+                  +  '<span class="annotator-adder-actions__label" data-action="comment">'+ type.title + '</span>'
+                  + '</button>';
+        colorButtons += html;
+    }
+    console.log('HTML', html);
+    self.element.querySelector('.annotator-adder-actions-color').innerHTML = colorButtons;
+
+
+  var btnElems = self.element.querySelectorAll(ANNOTATE_BTN_SELECTOR);
+
+  Array.from(btnElems).forEach(function(el) {
+    el.addEventListener('click', handleCommand);
+  });
+
+  function handleCommand(event) {
+      event.preventDefault();
+      event.stopPropagation();
+      var isAnnotateCommand = this.classList.contains(ANNOTATE_BTN_CLASS);
+      var type_id = this.getAttribute('data-type-id');
+      options.onAnnotate(type_id);
+      // if (isAnnotateCommand) {
+      // } else {
+      //   options.onHighlight();
+      // }
+
+      self.hide();
+    }
+  }
 }
 
 module.exports = {

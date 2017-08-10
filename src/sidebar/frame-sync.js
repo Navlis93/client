@@ -122,6 +122,7 @@ function FrameSync($rootScope, $window, Discovery, annotationUI, bridge) {
     bridge.on('beforeCreateAnnotation', function (event) {
       inFrame.add(event.tag);
       var annot = Object.assign({}, event.msg, {$tag: event.tag});
+      console.log("BFC 2", annot, event);
       $rootScope.$broadcast(events.BEFORE_ANNOTATION_CREATED, annot);
     });
 

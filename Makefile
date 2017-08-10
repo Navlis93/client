@@ -1,3 +1,5 @@
+YARN := node_modules/.bin/yarn
+
 .PHONY: default
 default: all
 
@@ -13,11 +15,11 @@ clean:
 ## Run test suite
 .PHONY: test
 test: node_modules/.uptodate
-	yarn test
+	$(YARN) test
 
 .PHONY: lint
 lint: node_modules/.uptodate
-	yarn run lint
+	$(YARN) run lint
 
 .PHONY: docs
 docs:
@@ -26,8 +28,8 @@ docs:
 ################################################################################
 
 build/manifest.json: node_modules/.uptodate
-	yarn run build
+	$(YARN) run build
 
 node_modules/.uptodate: package.json yarn.lock
-	yarn run deps 2>/dev/null || yarn install
+	$(YARN) run deps 2>/dev/null || $(YARN) install
 	@touch $@

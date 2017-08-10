@@ -7,7 +7,7 @@
 // annotations successfully anchor and relays these to the sidebar app.
 function AnnotationSync(bridge, options) {
   var self = this;
-
+  console.log("AnnotationSync OPTIONS", JSON.stringify(options), this._eventListeners, this._channelListeners);
   this.bridge = bridge;
 
   if (!options.on) {
@@ -90,6 +90,11 @@ AnnotationSync.prototype._channelListeners = {
     this._emit('annotationsLoaded', annotations);
     return cb(null, annotations);
   },
+  'loadTypes': function(types, cb) {
+    console.log("LOAD TYPES SYNC", types);
+    this._emit('typesLoaded', types);
+    return cb(null, types);
+  },
 };
 
 // Handlers for events coming from this frame, to send them across the channel
@@ -98,6 +103,7 @@ AnnotationSync.prototype._eventListeners = {
     if (annotation.$tag) {
       return undefined;
     }
+    console.log('BCA FIRE', JSON.stringify(annotation));
     return this._mkCallRemotelyAndParseResults('beforeCreateAnnotation')(annotation);
   },
 };

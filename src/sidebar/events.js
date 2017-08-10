@@ -46,4 +46,6 @@ module.exports = {
 
   /** An annotation is unloaded. */
   ANNOTATIONS_UNLOADED: 'annotationsUnloaded',
+
+  TYPES_LOADED: 'typesLoaded',
 };
