@@ -38,19 +38,19 @@ function annotationMapper($rootScope, annotationUI, store, bridge) {
     }
     
 
-    if(typeof $rootScope._types === 'undefined'){
-      store.types().then(function(result){
-        $rootScope._types = {}
-        for(var i=0; i < result.length; i++){
-          var type = result[i];
-          $rootScope._types[type.id] = type;
-        }
-        bridge.call('loadTypes', result);
-        _load()
-        })
-    }else{
+    // if(typeof $rootScope._types === 'undefined'){
+    //   store.types().then(function(result){
+    //     $rootScope._types = {}
+    //     for(var i=0; i < result.length; i++){
+    //       var type = result[i];
+    //       $rootScope._types[type.id] = type;
+    //     }
+    //     bridge.call('loadTypes', result);
+    //     _load()
+    //     })
+    // }else{
           _load()
-    }
+    // }
 
   }
 

@@ -32,9 +32,9 @@ function groupIDFromSelection(selection, results) {
 }
 
 // @ngInject
-function SidebarContentController(
+function SidebarContentController($rootScope,
   $scope, analytics, annotationUI, annotationMapper, drafts, features, frameSync,
-  groups, rootThread, settings, streamer, streamFilter, store
+  groups, rootThread, settings, streamer, streamFilter, store, bridge
 ) {
   var self = this;
 
@@ -167,33 +167,50 @@ function SidebarContentController(
    * Load annotations for all URLs associated with `frames`.
    */
   function loadAnnotations() {
-    _resetAnnotations();
 
-    searchClients.forEach(function (client) {
-      client.cancel();
-    });
+    function _load(){
+        _resetAnnotations();
+        searchClients.forEach(function (client) {
+          client.cancel();
+        });
 
-    // If there is no selection, load annotations only for the focused group.
-    //
-    // If there is a selection, we load annotations for all groups, find out
-    // which group the first selected annotation is in and then filter the
-    // results on the client by that group.
-    //
-    // In the common case where the total number of annotations on
-    // a page that are visible to the user is not greater than
-    // the batch size, this saves an extra roundtrip to the server
-    // to fetch the selected annotation in order to determine which group
-    // it is in before fetching the remaining annotations.
-    var group = annotationUI.hasSelectedAnnotations() ?
-      null : groups.focused().id;
+        // If there is no selection, load annotations only for the focused group.
+        //
+        // If there is a selection, we load annotations for all groups, find out
+        // which group the first selected annotation is in and then filter the
+        // results on the client by that group.
+        //
+        // In the common case where the total number of annotations on
+        // a page that are visible to the user is not greater than
+        // the batch size, this saves an extra roundtrip to the server
+        // to fetch the selected annotation in order to determine which group
+        // it is in before fetching the remaining annotations.
+        var group = annotationUI.hasSelectedAnnotations() ?
+          null : groups.focused().id;
 
-    var searchUris = annotationUI.searchUris();
-    if (searchUris.length > 0) {
-      _loadAnnotationsFor(searchUris, group);
+        var searchUris = annotationUI.searchUris();
+        if (searchUris.length > 0) {
+          _loadAnnotationsFor(searchUris, group);
 
-      streamFilter.resetFilter().addClause('/uri', 'one_of', searchUris);
-      streamer.setConfig('filter', {filter: streamFilter.getFilter()});
+          streamFilter.resetFilter().addClause('/uri', 'one_of', searchUris);
+          streamer.setConfig('filter', {filter: streamFilter.getFilter()});
+        }
     }
+
+    if(typeof $rootScope._types === 'undefined'){
+        store.types().then(function(result){
+        $rootScope._types = {}
+        for(var i=0; i < result.length; i++){
+          var type = result[i];
+          $rootScope._types[type.id] = type;
+        }
+        bridge.call('loadTypes', result);
+        _load()
+        })
+    }else{
+        _load()
+    }
+
   }
 
   $scope.$on('sidebarOpened', function () {
@@ -241,6 +258,7 @@ function SidebarContentController(
       return;
     }
     annotationUI.clearSelectedAnnotations();
+
     loadAnnotations();
   });
 

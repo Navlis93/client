@@ -136,8 +136,8 @@ function AnnotationController(
     }
 
     $scope.data = {annotation_type: self.annotation.type_id}
-    console.log("INIT AC", $scope.data, self.annotation);
-    $scope.$applyAsync(function () {$scope.data = {annotation_type: self.annotation.type_id}});
+    // console.log("INIT AC", $scope.data, self.annotation);
+    // $scope.$applyAsync(function () {$scope.data = {annotation_type: self.annotation.type_id}});
   }
 
   /** Save this annotation if it's a new highlight.
