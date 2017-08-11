@@ -299,13 +299,14 @@ function Adder(container, options) {
     var colorButtons = ""
     for(var i = 0; i < types.length; i++){
         var type = types[i];
-        var html = '<button class="annotator-adder-actions__button h-icon-annotate js-annotate-btn" data-type-id="' + type.id + '" data-type-color="' + type.color +'">'
-                  +  '<span class="annotator-adder-actions__label" data-action="comment">'+ type.title + '</span>'
+        var html = '<button title="'+ type.title + '" class="annotator-adder-actions__button'
+                  + ' js-annotate-btn circle" style="background-color: #' +  type.color + '!important;"'
+                  + ' data-type-id="' + type.id + '" data-type-color="' + type.color +'">'
                   + '</button>';
         colorButtons += html;
     }
     console.log('HTML', html);
-    self.element.querySelector('.annotator-adder-actions-color').innerHTML = colorButtons;
+    self.element.querySelector('.annotator-adder-actions').innerHTML = colorButtons;
 
 
   var btnElems = self.element.querySelectorAll(ANNOTATE_BTN_SELECTOR);
@@ -321,11 +322,6 @@ function Adder(container, options) {
       var type_id = parseInt(this.getAttribute('data-type-id'));
       var color = this.getAttribute('data-type-color');
       options.onAnnotate(type_id, color);
-      // if (isAnnotateCommand) {
-      // } else {
-      //   options.onHighlight();
-      // }
-
       self.hide();
     }
   }
