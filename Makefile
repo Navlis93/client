@@ -6,6 +6,11 @@ default: all
 .PHONY: all
 all: build/manifest.json
 
+.PHONY: dev
+dev: node_modules/.uptodate clean
+	gulp build
+	gulp watch
+
 ## Remove build artifacts
 .PHONY: clean
 clean:
