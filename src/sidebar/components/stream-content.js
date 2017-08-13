@@ -14,7 +14,6 @@ function StreamContentController(
 
   /** Load annotations fetched from the API into the app. */
   var load = function (result) {
-    console.log("LOADD");
     offset += result.rows.length;
     annotationMapper.loadAnnotations(result.rows, result.replies);
   };

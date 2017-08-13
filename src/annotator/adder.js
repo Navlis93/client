@@ -149,37 +149,6 @@ function Adder(container, options) {
   var view = self.element.ownerDocument.defaultView;
   var enterTimeout;
   
-  // var colorButtons = ""
-  // for(var i = 0; i < options.types.length; i++){
-  //     var type = options.types[i];
-  //     var html = '<button class="annotator-adder-actions__button h-icon-annotate js-annotate-btn" data-type-id="' + type.id + '">'
-  //               +  '<span class="annotator-adder-actions__label" data-action="comment">'+ type.title + '</span>'
-  //               + '</button>';
-  //     colorButtons += html;
-  // }
-  // console.log('HTML', html);
-  // self.element.querySelector('.annotator-adder-actions-color').innerHTML = colorButtons;
-
-  // // self.element.querySelector(ANNOTATE_BTN_SELECTOR)
-  // //   .addEventListener('click', handleCommand);
-  // // self.element.querySelector(HIGHLIGHT_BTN_SELECTOR)
-  // //   .addEventListener('click', handleCommand);
-
-  // function handleCommand(event) {
-  //   event.preventDefault();
-  //   event.stopPropagation();
-
-  //   var isAnnotateCommand = this.classList.contains(ANNOTATE_BTN_CLASS);
-
-  //   if (isAnnotateCommand) {
-  //     options.onAnnotate();
-  //   } else {
-  //     options.onHighlight();
-  //   }
-
-  //   self.hide();
-  // }
-
   function width() {
     return self.element.getBoundingClientRect().width;
   }
@@ -305,7 +274,6 @@ function Adder(container, options) {
                   + '</button>';
         colorButtons += html;
     }
-    console.log('HTML', html);
     self.element.querySelector('.annotator-adder-actions').innerHTML = colorButtons;
 
 

@@ -79,18 +79,14 @@
 
   <div class="annotation-body u-layout-row tags tags-read-only"
        ng-if="vm.editing()">
-    <span>Type: {{ vm.state().type }} ## {{vm.state() }} $$ {{ vm.getAvailableTypes() }}</span>
     <div class="u-stretch"></div>
   </div>
 
-  <select name="repeatSelect"
-          id="repeatSelect"
-          ng-model="data.annotation_type"
+  <select ng-model="data.annotation_type"
           ng-options="v.id as v.title for (k, v) in vm.getAvailableTypes()"
           ng-change=setType()>
      <option value="">Select Type</option>
   </select>
-  T {{ data }} ]
   <!-- / Type -->
 
   <footer class="annotation-footer">

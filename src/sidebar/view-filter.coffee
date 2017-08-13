@@ -86,6 +86,10 @@ module.exports = ['unicode', (unicode) ->
       autofalse: (annotation) -> return not annotation.user?
       value: (annotation) -> return annotation.user
       match: (term, value) -> return value.indexOf(term) > -1
+    type:
+      autofalse: (annotation) -> return not annotation.type_id?
+      value: (annotation) -> return annotation.type_id + ''
+      match: (term, value) -> return value == term
     any:
       fields: ['quote', 'text', 'tag', 'user']
 
@@ -105,10 +109,12 @@ module.exports = ['unicode', (unicode) ->
     # Normalizing the filters, need to do only once.
     for _, filter of filters
       if filter.terms
+        console.log("FILTER TERMS BEFORE", filter.terms)
         filter.terms = filter.terms.map (e) =>
           e = e.toLowerCase()
           e = _normalize e
           e
+        console.log("FILTER TERMS", filter.terms)
 
     for annotation in annotations
       break if count >= limit

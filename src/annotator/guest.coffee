@@ -34,6 +34,7 @@ normalizeURI = (uri, baseURI) ->
 
 module.exports = class Guest extends Delegator
   SHOW_HIGHLIGHTS_CLASS = 'annotator-highlights-always-on'
+  HIDE_HIGHLIGHTS_CLASS = 'annotator-highlights-always-off'
 
   # Events to be bound on Delegator#element.
   events:
@@ -496,9 +497,9 @@ module.exports = class Guest extends Delegator
 
   toggleHighlightClass: (shouldShowHighlights) ->
     if shouldShowHighlights
-      @element.addClass(SHOW_HIGHLIGHTS_CLASS)
+      @element.removeClass(HIDE_HIGHLIGHTS_CLASS)
     else
-      @element.removeClass(SHOW_HIGHLIGHTS_CLASS)
+      @element.addClass(HIDE_HIGHLIGHTS_CLASS)
 
     @visibleHighlights = shouldShowHighlights
 

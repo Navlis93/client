@@ -13,7 +13,6 @@ var isPageNote = annotationMetadata.isPageNote;
  */
 function updateModel(annotation, changes, permissions) {
   var userid = annotation.user;
-  console.log("UM", annotation.type_id, changes.type_id);
   return Object.assign({}, annotation, {
     // Apply changes from the draft
     tags: changes.tags,
@@ -136,8 +135,6 @@ function AnnotationController(
     }
 
     $scope.data = {annotation_type: self.annotation.type_id}
-    // console.log("INIT AC", $scope.data, self.annotation);
-    // $scope.$applyAsync(function () {$scope.data = {annotation_type: self.annotation.type_id}});
   }
 
   /** Save this annotation if it's a new highlight.

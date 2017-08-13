@@ -127,6 +127,7 @@ function generateFacetedFilter(searchtext) {
   var text = [];
   var uri = [];
   var user = [];
+  var type = [];
 
   if (searchtext) {
     terms = tokenize(searchtext);
@@ -189,6 +190,7 @@ function generateFacetedFilter(searchtext) {
       case 'text': text.push(term.slice(5)); break;
       case 'uri': uri.push(term.slice(4)); break;
       case 'user': user.push(term.slice(5)); break;
+      case 'type': type.push(term.slice(5)); break;
       default: any.push(term);
       }
     }
@@ -225,6 +227,10 @@ function generateFacetedFilter(searchtext) {
     },
     user: {
       terms: user,
+      operator: 'or',
+    },
+    type: {
+      terms: type,
       operator: 'or',
     },
   };

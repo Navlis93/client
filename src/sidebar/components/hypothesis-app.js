@@ -191,6 +191,10 @@ function HypothesisAppController(
 
   this.countPendingUpdates = streamer.countPendingUpdates;
   this.applyPendingUpdates = streamer.applyPendingUpdates;
+
+  $scope.getAvailableTypes = function(){
+    return ['a', 'b'];
+  }
 }
 
 module.exports = {

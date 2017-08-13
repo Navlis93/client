@@ -6,9 +6,9 @@
 $base-font-size: 14px;
 
 //HIGHLIGHTS////////////////////////////////
-.annotator-highlights-always-on {
+.annotator-highlights-always-off {
   .annotator-hl {
-    background-color: $highlight-color;
+    background-color: transparent!important;
 
     // cursor pointer gives mobile devices click
     // event support. Using the pointer:coarse gives

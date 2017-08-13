@@ -7,7 +7,6 @@
 // annotations successfully anchor and relays these to the sidebar app.
 function AnnotationSync(bridge, options) {
   var self = this;
-  console.log("AnnotationSync OPTIONS", JSON.stringify(options), this._eventListeners, this._channelListeners);
   this.bridge = bridge;
 
   if (!options.on) {
@@ -103,7 +102,6 @@ AnnotationSync.prototype._eventListeners = {
     if (annotation.$tag) {
       return undefined;
     }
-    console.log('BCA FIRE', JSON.stringify(annotation));
     return this._mkCallRemotelyAndParseResults('beforeCreateAnnotation')(annotation);
   },
 };
