@@ -273,7 +273,7 @@ function generateBootScript(manifest) {
     defaultAssetRoot = `https://cdn.hypothes.is/hypothesis/${version}/`;
   } else {
     var prefix = process.env.DEFULT_ASSET_PREFIX || `http://${packageServerHostname()}`
-    defaultAssetRoot = prefix + `/hypothesis/${version}/`;
+    defaultAssetRoot = `http://cli.h.local/hypothesis/${version}/`;
   }
 
   if (isFirstBuild) {

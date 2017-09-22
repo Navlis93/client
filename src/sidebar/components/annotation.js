@@ -8,6 +8,7 @@ var isNew = annotationMetadata.isNew;
 var isReply = annotationMetadata.isReply;
 var isPageNote = annotationMetadata.isPageNote;
 
+
 /**
  * Return a copy of `annotation` with changes made in the editor applied.
  */
@@ -113,28 +114,32 @@ function AnnotationController(
       self.annotation.permissions = permissions.default(self.annotation.user,
                                                       self.annotation.group);
     }
-    self.annotation.text = self.annotation.text || '';
-    if (!Array.isArray(self.annotation.tags)) {
-      self.annotation.tags = [];
-    }
 
-    // Automatically save new highlights to the server when they're created.
-    // Note that this line also gets called when the user logs in (since
-    // AnnotationController instances are re-created on login) so serves to
-    // automatically save highlights that were created while logged out when you
-    // log in.
-    saveNewHighlight();
+    var translatedVal = store.translate(self.quote());
+    translatedVal.then(function (result) {
+        self.annotation.text = self.annotation.text || result;
+        if (!Array.isArray(self.annotation.tags)) {
+          self.annotation.tags = [];
+        }
 
-    // If this annotation is not a highlight and if it's new (has just been
-    // created by the annotate button) or it has edits not yet saved to the
-    // server - then open the editor on AnnotationController instantiation.
-    if (!newlyCreatedByHighlightButton) {
-      if (isNew(self.annotation) || drafts.get(self.annotation)) {
-        self.edit();
-      }
-    }
+        // Automatically save new highlights to the server when they're created.
+        // Note that this line also gets called when the user logs in (since
+        // AnnotationController instances are re-created on login) so serves to
+        // automatically save highlights that were created while logged out when you
+        // log in.
+        saveNewHighlight();
 
-    $scope.data = {annotation_type: self.annotation.type_id}
+        // If this annotation is not a highlight and if it's new (has just been
+        // created by the annotate button) or it has edits not yet saved to the
+        // server - then open the editor on AnnotationController instantiation.
+        if (!newlyCreatedByHighlightButton) {
+          if (isNew(self.annotation) || drafts.get(self.annotation)) {
+            self.edit();
+          }
+        }
+
+        $scope.data = {annotation_type: self.annotation.type_id};
+    })
   }
 
   /** Save this annotation if it's a new highlight.

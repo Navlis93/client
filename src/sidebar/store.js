@@ -5,6 +5,7 @@ var get = require('lodash.get');
 var retryUtil = require('./retry-util');
 var urlUtil = require('./util/url-util');
 
+
 /**
  * Translate the response from a failed API call into an Error-like object.
  *
@@ -163,6 +164,7 @@ function store($http, $q, auth, settings) {
     return createAPICall($http, $q, links, route, auth.tokenGetter);
   }
 
+  console.log("Here");
   return {
     search: apiCall('search'),
     annotation: {
@@ -180,6 +182,18 @@ function store($http, $q, auth, settings) {
     },
     links: apiCall('links'),
     types: apiCall('annotation.types'),
+    // Added translate API to show word translation
+    translate: function translate(word) {
+                return $http.post("http://35.201.242.199/v0/gtranslate",
+                                {'q': word,
+                                'source': 'en',
+                                'target': 'zh',
+                                'format': 'text'})
+                        .then(function (response) {
+                          console.log('response -- ', response);
+                          return response.data.translatedText;
+                        })
+                }
   };
 }
 
