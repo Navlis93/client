@@ -148,7 +148,7 @@ function Adder(container, options) {
 
   var view = self.element.ownerDocument.defaultView;
   var enterTimeout;
-  
+
   function width() {
     return self.element.getBoundingClientRect().width;
   }
@@ -274,8 +274,7 @@ function Adder(container, options) {
                   + '</button>';
         colorButtons += html;
     }
-    self.element.querySelector('.annotator-adder-actions').innerHTML = colorButtons;
-
+      // self.element.querySelector('.annotator-adder-actions').innerHTML = colorButtons;
 
   var btnElems = self.element.querySelectorAll(ANNOTATE_BTN_SELECTOR);
 

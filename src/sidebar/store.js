@@ -184,7 +184,7 @@ function store($http, $q, auth, settings) {
     types: apiCall('annotation.types'),
     // Added translate API to show word translation
     translate: function translate(word) {
-                return $http.post("http://35.201.242.199/v0/gtranslate",
+                return $http.post("http://35.194.159.76:80/v0/gtranslate",
                                 {'q': word,
                                 'source': 'en',
                                 'target': 'zh',

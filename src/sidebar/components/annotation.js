@@ -114,10 +114,11 @@ function AnnotationController(
       self.annotation.permissions = permissions.default(self.annotation.user,
                                                       self.annotation.group);
     }
-
+    console.log("QUOTE - ", self.quote());
     var translatedVal = store.translate(self.quote());
     translatedVal.then(function (result) {
         self.annotation.text = self.annotation.text || result;
+        console.log("RESULT - ", result);
         if (!Array.isArray(self.annotation.tags)) {
           self.annotation.tags = [];
         }
