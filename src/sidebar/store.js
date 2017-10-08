@@ -164,7 +164,6 @@ function store($http, $q, auth, settings) {
     return createAPICall($http, $q, links, route, auth.tokenGetter);
   }
 
-  console.log("Here");
   return {
     search: apiCall('search'),
     annotation: {
@@ -183,7 +182,7 @@ function store($http, $q, auth, settings) {
     links: apiCall('links'),
     types: apiCall('annotation.types'),
     // Added translate API to show word translation
-    translate: function translate(word) {
+    translate: function translate(word) { //TODO - fix this url
                 return $http.post("http://35.194.159.76:80/v0/gtranslate",
                                 {'q': word,
                                 'source': 'en',
@@ -193,7 +192,15 @@ function store($http, $q, auth, settings) {
                           console.log('response -- ', response);
                           return response.data.translatedText;
                         })
-                }
+                },
+    flashcard: {
+        add: function add(flashcard) { //TODO - fix this url
+            return $http.post("http://0.0.0.0:8021/v0/flashcards", flashcard)
+                .then(function (response) {
+                    return response;
+                })
+        }
+    }
   };
 }
 

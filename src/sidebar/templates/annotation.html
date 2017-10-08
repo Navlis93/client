@@ -159,6 +159,12 @@
           is-open="vm.showShareDialog"
           on-close="vm.showShareDialog = false">
         </annotation-share-dialog>
+        <annotation-action-button
+        icon="'h-icon-bookmark'"
+        is-disabled="vm.isDeleted()"
+        label="'Save As Flashcard'"
+        on-click="vm.addFlashcard()">
+        </annotation-action-button>
       </span>
       <span ng-if="vm.canFlag()">
         <annotation-action-button

@@ -39,7 +39,6 @@ function AnnotationController(
     var updating = !!annot.id;
 
     if (updating) {
-      console.log("Saving", annot.type_id);
       saved = store.annotation.update({id: annot.id}, annot);
     } else {
       saved = store.annotation.create({}, annot);
@@ -114,33 +113,53 @@ function AnnotationController(
       self.annotation.permissions = permissions.default(self.annotation.user,
                                                       self.annotation.group);
     }
-    console.log("QUOTE - ", self.quote());
-    var translatedVal = store.translate(self.quote());
-    translatedVal.then(function (result) {
-        self.annotation.text = self.annotation.text || result;
-        console.log("RESULT - ", result);
-        if (!Array.isArray(self.annotation.tags)) {
-          self.annotation.tags = [];
-        }
 
-        // Automatically save new highlights to the server when they're created.
-        // Note that this line also gets called when the user logs in (since
-        // AnnotationController instances are re-created on login) so serves to
-        // automatically save highlights that were created while logged out when you
-        // log in.
-        saveNewHighlight();
+    self.annotation.text = self.annotation.text || '';
 
-        // If this annotation is not a highlight and if it's new (has just been
-        // created by the annotate button) or it has edits not yet saved to the
-        // server - then open the editor on AnnotationController instantiation.
-        if (!newlyCreatedByHighlightButton) {
-          if (isNew(self.annotation) || drafts.get(self.annotation)) {
+    if (!Array.isArray(self.annotation.tags)) {
+     self.annotation.tags = [];
+    }
+
+    // Automatically save new highlights to the server when they're created.
+    // Note that this line also gets called when the user logs in (since
+    // AnnotationController instances are re-created on login) so serves to
+    // automatically save highlights that were created while logged out when you
+    // log in.
+    // saveNewHighlight();
+
+    // If this annotation is not a highlight and if it's new (has just been
+    // created by the annotate button) or it has edits not yet saved to the
+    // server - then open the editor on AnnotationController instantiation.
+    if (!newlyCreatedByHighlightButton) {
+        if (isNew(self.annotation) || drafts.get(self.annotation)) {
             self.edit();
-          }
         }
+    }
+    $scope.data = {annotation_type: self.annotation.type_id};
 
-        $scope.data = {annotation_type: self.annotation.type_id};
-    })
+    if (self.annotation.type_id == '1' && isNew(self.annotation)) { //TODO : don't use hard coded
+      var translated = updateTranslationText();
+      translated.then(function(){
+        saveNewHighlight();
+      });
+    }
+    else {
+      saveNewHighlight();
+    }
+  }
+
+  /**
+   *  Get the translation of the highlighted text.
+   *  Update the annotation text with translation.
+   */
+  function updateTranslationText() {
+    console.log("self.annotation.text -- ", self.quote());
+    var translatedVal = store.translate(self.quote());
+    return translatedVal.then(function (result) {
+      console.log('result ', result);
+      self.annotation.text = result;
+      return;
+    });
   }
 
   /** Save this annotation if it's a new highlight.
@@ -207,6 +226,33 @@ function AnnotationController(
       annotationUI.updateFlagStatus(self.annotation.id, true);
     }, onRejected);
   };
+
+  /**
+    * @ngdoc method
+    * @name annotation.AnnotationController#addFlashcard
+    * @description Save the annotation as a Flashcard
+    */
+  this.addFlashcard = function() {
+    console.log(self.annotation);
+    console.log(self.annotation.text);
+    var flashcard = {
+                  "content" : self.quote(),
+                  "source" : "en",
+                  "target" : "zh",
+                  "translation" : self.annotation.text,
+                  "annotation_id" : self.id(),
+                  "user_id" : self.user(),
+                };
+    // console.log("FLASHCARD -- " , flashcard);
+    var flashcardVal = store.flashcard.add(flashcard);
+    flashcardVal.then(function (result) {
+        if (result.status == 200) {
+          console.log("FLASHCARD RESULT - ", result);
+        }
+    });
+  };
+
+
 
   /**
     * @ngdoc method
