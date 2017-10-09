@@ -182,8 +182,8 @@ function store($http, $q, auth, settings) {
     links: apiCall('links'),
     types: apiCall('annotation.types'),
     // Added translate API to show word translation
-    translate: function translate(word) { //TODO - fix this url
-                return $http.post("http://35.194.159.76:80/v0/gtranslate",
+    translate: function translate(word) {
+                return $http.post("http://api.linalgo.com/v0/gtranslate",
                                 {'q': word,
                                 'source': 'en',
                                 'target': 'zh',
@@ -194,8 +194,8 @@ function store($http, $q, auth, settings) {
                         })
                 },
     flashcard: {
-        add: function add(flashcard) { //TODO - fix this url
-            return $http.post("http://0.0.0.0:8021/v0/flashcards", flashcard)
+        add: function add(flashcard) {
+            return $http.post("http://api.linalgo.com/v0/flashcards", flashcard)
                 .then(function (response) {
                     return response;
                 })
