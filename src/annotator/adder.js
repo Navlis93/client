@@ -268,29 +268,30 @@ function Adder(container, options) {
     var colorButtons = ""
     for(var i = 0; i < types.length; i++){
         var type = types[i];
-        var html = '<button title="'+ type.title + '" class="annotator-adder-actions__button'
-                  + ' js-annotate-btn circle" style="background-color: #' +  type.color + '!important;"'
-                  + ' data-type-id="' + type.id + '" data-type-color="' + type.color +'">'
+        var html = '<button title="'+ type.title + '" class="annotator-adder-actions__button js-annotate-btn h-icon-'
+                  + type.icon_name + '" data-type-id="' + type.id
+                  + '" data-type-color="' + type.color + '" data-type-name="' + type.type_name + '">'
+                  + '<span class="annotator-adder-actions__label" data-action="comment">' + type.title + '</span>'
                   + '</button>';
         colorButtons += html;
     }
-      // self.element.querySelector('.annotator-adder-actions').innerHTML = colorButtons;
+    self.element.querySelector('.annotator-adder-actions').innerHTML = colorButtons;
 
-  var btnElems = self.element.querySelectorAll(ANNOTATE_BTN_SELECTOR);
+    var btnElems = self.element.querySelectorAll(ANNOTATE_BTN_SELECTOR);
 
-  Array.from(btnElems).forEach(function(el) {
-    el.addEventListener('click', handleCommand);
-  });
+    Array.from(btnElems).forEach(function(el) {
+      el.addEventListener('click', handleCommand);
+    });
 
-  function handleCommand(event) {
-      event.preventDefault();
-      event.stopPropagation();
-      var isAnnotateCommand = this.classList.contains(ANNOTATE_BTN_CLASS);
-      var type_id = parseInt(this.getAttribute('data-type-id'));
-      var color = this.getAttribute('data-type-color');
-      options.onAnnotate(type_id, color);
-      self.hide();
-    }
+    function handleCommand(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        var isAnnotateCommand = this.classList.contains(ANNOTATE_BTN_CLASS);
+        var type_id = parseInt(this.getAttribute('data-type-id'));
+        var color = this.getAttribute('data-type-color');
+        options.onAnnotate(type_id, color);
+        self.hide();
+      }
   }
 }
 

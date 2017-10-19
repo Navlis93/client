@@ -137,14 +137,29 @@ function AnnotationController(
     }
     $scope.data = {annotation_type: self.annotation.type_id};
 
-    if (self.annotation.type_id == '1' && isNew(self.annotation)) { //TODO : don't use hard coded
-      var translated = updateTranslationText();
+    if (getAnnoTypeName(self.annotation.type_id) == 'translate' && isNew(self.annotation)) {
+      var translated = updateTranslationText(); //TODO : get translation language from user profile
       translated.then(function(){
         saveNewHighlight();
       });
     }
+    else if (getAnnoTypeName(self.annotation.type_id) == 'question' && isNew(self.annotation)) {
+      self.edit();  //open the edit comment option to add question
+    }
     else {
       saveNewHighlight();
+    }
+  }
+
+
+
+  function getAnnoTypeName(type_id) {
+    var types = self.getAvailableTypes();
+    for(var i in types) {
+        var type = types[i];
+        if (type.id === type_id) {
+          return type.type_name;
+        }
     }
   }
 
@@ -153,10 +168,10 @@ function AnnotationController(
    *  Update the annotation text with translation.
    */
   function updateTranslationText() {
-    console.log("self.annotation.text -- ", self.quote());
+    // console.log("self.annotation.text -- ", self.quote());
     var translatedVal = store.translate(self.quote());
     return translatedVal.then(function (result) {
-      console.log('result ', result);
+      // console.log('result ', result);
       self.annotation.text = result;
       return;
     });
@@ -320,7 +335,7 @@ function AnnotationController(
 
   /**
     * @ngdoc method
-    * @name annotation.AnnotaitonController#hasContent
+    * @name annotation.AnnotationController#hasContent
     * @returns {boolean} `true` if this annotation has content, `false`
     *   otherwise.
     */
