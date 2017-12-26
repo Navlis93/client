@@ -13,18 +13,18 @@ var urlUtil = require('./util/url-util');
  * error.
  */
 function translateResponseToError(response) {
-  var message;
-  if (response.status <= 0) {
-    message = 'Service unreachable.';
-  } else {
-    message = response.status + ' ' + response.statusText;
-    if (response.data && response.data.reason) {
-      message = message + ': ' + response.data.reason;
+    var message;
+    if (response.status <= 0) {
+        message = 'Service unreachable.';
+    } else {
+        message = response.status + ' ' + response.statusText;
+        if (response.data && response.data.reason) {
+            message = message + ': ' + response.data.reason;
+        }
     }
-  }
-  var err = new Error(message);
-  err.response = response;
-  return err;
+    var err = new Error(message);
+    err.response = response;
+    return err;
 }
 
 /**
@@ -32,37 +32,37 @@ function translateResponseToError(response) {
  * Client-only properties are marked by a '$' prefix.
  */
 function stripInternalProperties(obj) {
-  var result = {};
+    var result = {};
 
-  for (var k in obj) {
-    if (obj.hasOwnProperty(k) && k[0] !== '$') {
-      result[k] = obj[k];
+    for (var k in obj) {
+        if (obj.hasOwnProperty(k) && k[0] !== '$') {
+            result[k] = obj[k];
+        }
     }
-  }
 
-  return result;
+    return result;
 }
 
 
 function forEachSorted(obj, iterator, context) {
-  var keys = Object.keys(obj).sort();
-  for (var i = 0; i < keys.length; i++) {
-    iterator.call(context, obj[keys[i]], keys[i]);
-  }
-  return keys;
+    var keys = Object.keys(obj).sort();
+    for (var i = 0; i < keys.length; i++) {
+        iterator.call(context, obj[keys[i]], keys[i]);
+    }
+    return keys;
 }
 
 
 function serializeValue(v) {
-  if (typeof v === 'object') {
-    return v instanceof Date ? v.toISOString() : JSON.stringify(v);
-  }
-  return v;
+    if (typeof v === 'object') {
+        return v instanceof Date ? v.toISOString() : JSON.stringify(v);
+    }
+    return v;
 }
 
 
 function encodeUriQuery(val) {
-  return encodeURIComponent(val).replace(/%20/g, '+');
+    return encodeURIComponent(val).replace(/%20/g, '+');
 }
 
 
@@ -76,24 +76,24 @@ function encodeUriQuery(val) {
 // then proceed to parse as a delimiter in the query string. To avoid this
 // problem we use a very conservative encoder, found above.
 function serializeParams(params) {
-  if (!params) {
-    return '';
-  }
-  var parts = [];
-  forEachSorted(params, function(value, key) {
-    if (value === null || typeof value === 'undefined') {
-      return;
+    if (!params) {
+        return '';
     }
-    if (Array.isArray(value)) {
-      value.forEach(function(v) {
-        parts.push(encodeUriQuery(key)  + '=' + encodeUriQuery(serializeValue(v)));
-      });
-    } else {
-      parts.push(encodeUriQuery(key) + '=' + encodeUriQuery(serializeValue(value)));
-    }
-  });
+    var parts = [];
+    forEachSorted(params, function (value, key) {
+        if (value === null || typeof value === 'undefined') {
+            return;
+        }
+        if (Array.isArray(value)) {
+            value.forEach(function (v) {
+                parts.push(encodeUriQuery(key) + '=' + encodeUriQuery(serializeValue(v)));
+            });
+        } else {
+            parts.push(encodeUriQuery(key) + '=' + encodeUriQuery(serializeValue(value)));
+        }
+    });
 
-  return parts.join('&');
+    return parts.join('&');
 }
 
 /**
@@ -108,42 +108,42 @@ function serializeParams(params) {
  *                   access token for the API.
  */
 function createAPICall($http, $q, links, route, tokenGetter) {
-  return function (params, data) {
-    // `$q.all` is used here rather than `Promise.all` because testing code that
-    // mixes native Promises with the `$q` promises returned by `$http`
-    // functions gets awkward in tests.
-    return $q.all([links, tokenGetter()]).then(function (linksAndToken) {
-      var links = linksAndToken[0];
-      var token = linksAndToken[1];
+    return function (params, data) {
+        // `$q.all` is used here rather than `Promise.all` because testing code that
+        // mixes native Promises with the `$q` promises returned by `$http`
+        // functions gets awkward in tests.
+        return $q.all([links, tokenGetter()]).then(function (linksAndToken) {
+            var links = linksAndToken[0];
+            var token = linksAndToken[1];
 
-      var descriptor = get(links, route);
-      var url = urlUtil.replaceURLParams(descriptor.url, params);
-      var headers = {};
+            var descriptor = get(links, route);
+            var url = urlUtil.replaceURLParams(descriptor.url, params);
+            var headers = {};
 
-      if (token) {
-        headers.Authorization = 'Bearer ' + token;
-      }
+            if (token) {
+                headers.Authorization = 'Bearer ' + token;
+            }
 
-      var req = {
-        data: data ? stripInternalProperties(data) : null,
-        headers: headers,
-        method: descriptor.method,
-        params: url.params,
-        paramSerializer: serializeParams,
-        url: url.url,
-      };
-      return $http(req);
-    }).then(function (response) {
-      return response.data;
-    }).catch(function (response) {
-      // Translate the API result into an `Error` to follow the convention that
-      // Promises should be rejected with an Error or Error-like object.
-      //
-      // Use `$q.reject` rather than just rethrowing the Error here due to
-      // mishandling of errors thrown inside `catch` handlers in Angular < 1.6
-      return $q.reject(translateResponseToError(response));
-    });
-  };
+            var req = {
+                data: data ? stripInternalProperties(data) : null,
+                headers: headers,
+                method: descriptor.method,
+                params: url.params,
+                paramSerializer: serializeParams,
+                url: url.url,
+            };
+            return $http(req);
+        }).then(function (response) {
+            return response.data;
+        }).catch(function (response) {
+            // Translate the API result into an `Error` to follow the convention that
+            // Promises should be rejected with an Error or Error-like object.
+            //
+            // Use `$q.reject` rather than just rethrowing the Error here due to
+            // mishandling of errors thrown inside `catch` handlers in Angular < 1.6
+            return $q.reject(translateResponseToError(response));
+        });
+    };
 }
 
 /**
@@ -154,54 +154,56 @@ function createAPICall($http, $q, links, route, tokenGetter) {
  */
 // @ngInject
 function store($http, $q, auth, settings) {
-  var links = retryUtil.retryPromiseOperation(function () {
-    return $http.get(settings.apiUrl);
-  }).then(function (response) {
-    return response.data.links;
-  });
+    var links = retryUtil.retryPromiseOperation(function () {
+        return $http.get(settings.apiUrl);
+    }).then(function (response) {
+        return response.data.links;
+    });
 
-  function apiCall(route) {
-    return createAPICall($http, $q, links, route, auth.tokenGetter);
-  }
-
-  return {
-    search: apiCall('search'),
-    annotation: {
-      create: apiCall('annotation.create'),
-      delete: apiCall('annotation.delete'),
-      get: apiCall('annotation.read'),
-      update: apiCall('annotation.update'),
-      flag: apiCall('annotation.flag'),
-      hide: apiCall('annotation.hide'),
-      unhide: apiCall('annotation.unhide'),
-    },
-    profile: {
-      read: apiCall('profile.read'),
-      update: apiCall('profile.update'),
-    },
-    links: apiCall('links'),
-    types: apiCall('annotation.types'),
-    // Added translate API to show word translation
-    translate: function translate(word) {
-                return $http.post("http://api.linalgo.com/v0/gtranslate",
-                                {'q': word,
-                                'source': 'en',
-                                'target': 'zh',
-                                'format': 'text'})
-                        .then(function (response) {
-                          console.log('response -- ', response);
-                          return response.data.translatedText;
-                        })
-                },
-    flashcard: {
-        add: function add(flashcard) {
-            return $http.post("http://api.linalgo.com/v0/flashcards", flashcard)
-                .then(function (response) {
-                    return response;
-                })
-        }
+    function apiCall(route) {
+        return createAPICall($http, $q, links, route, auth.tokenGetter);
     }
-  };
+
+    return {
+        search: apiCall('search'),
+        annotation: {
+            create: apiCall('annotation.create'),
+            delete: apiCall('annotation.delete'),
+            get: apiCall('annotation.read'),
+            update: apiCall('annotation.update'),
+            flag: apiCall('annotation.flag'),
+            hide: apiCall('annotation.hide'),
+            unhide: apiCall('annotation.unhide'),
+        },
+        profile: {
+            read: apiCall('profile.read'),
+            update: apiCall('profile.update'),
+        },
+        links: apiCall('links'),
+        types: apiCall('annotation.types'),
+        // Added translate API to show word translation
+        translate: function translate(word) {
+            return $http.post("http://api.linalgo.com/v0/gtranslate",
+                {
+                    'q': word,
+                    'source': 'en',
+                    'target': 'zh',
+                    'format': 'text'
+                })
+                .then(function (response) {
+                    console.log('response -- ', response);
+                    return response.data.translatedText;
+                })
+        },
+        flashcard: {
+            add: function add(flashcard) {
+                return $http.post("http://api.linalgo.com/v0/flashcards", flashcard)
+                    .then(function (response) {
+                        return response;
+                    })
+            }
+        }
+    };
 }
 
 module.exports = store;

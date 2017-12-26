@@ -4,15 +4,6 @@
 
 <div ng-keydown="vm.onKeydown($event)" ng-if="vm.user()">
 
-  <annotation-header annotation="vm.annotation"
-                     is-editing="vm.editing()"
-                     is-highlight="vm.isHighlight()"
-                     is-private="vm.state().isPrivate"
-                     on-reply-count-click="vm.onReplyCountClick()"
-                     reply-count="vm.replyCount"
-                     show-document-info="vm.showDocumentInfo">
-  </annotation-header>
-
   <!-- Excerpts -->
   <section class="annotation-quote-list"
     ng-class="{'is-orphan' : vm.isOrphan()}"
@@ -49,27 +40,6 @@
   </section>
   <!-- / Body -->
 
-  <!-- Tags -->
-  <div class="annotation-body form-field" ng-if="vm.editing()">
-    <tag-editor tags="vm.state().tags"
-                on-edit-tags="vm.setTags(tags)"></tag-editor>
-  </div>
-
-  <div class="annotation-body u-layout-row tags tags-read-only"
-       ng-if="(vm.canCollapseBody || vm.state().tags.length) && !vm.editing()">
-    <ul class="tag-list">
-      <li class="tag-item" ng-repeat="tag in vm.state().tags">
-        <a ng-href="{{vm.tagSearchURL(tag)}}" target="_blank">{{tag}}</a>
-      </li>
-    </ul>
-    <div class="u-stretch"></div>
-    <a class="annotation-link u-strong" ng-show="vm.canCollapseBody"
-      ng-click="vm.toggleCollapseBody($event)"
-      ng-title="vm.collapseBody ? 'Show the full annotation text' : 'Show the first few lines only'"
-      ng-bind="vm.collapseBody ? 'More' : 'Less'"
-      h-branding="accentColor"></a>
-  </div>
-  <!-- / Tags -->
 
     <!-- Type -->
   <div class="annotation-body form-field" ng-if="vm.editing()">
@@ -139,48 +109,6 @@
         ng-show="vm.authorize('delete')"
         on-click="vm.delete()"
       ></annotation-action-button>
-      <annotation-action-button
-        icon="'h-icon-annotation-reply'"
-        is-disabled="vm.isDeleted()"
-        label="'Reply'"
-        on-click="vm.reply()"
-      ></annotation-action-button>
-      <span class="annotation-share-dialog-wrapper">
-        <annotation-action-button
-         icon="'h-icon-annotation-share'"
-         is-disabled="vm.isDeleted()"
-         label="'Share'"
-         on-click="vm.showShareDialog = true"
-        ></annotation-action-button>
-        <annotation-share-dialog
-          group="vm.group()"
-          uri="vm.incontextLink()"
-          is-private="vm.state().isPrivate"
-          is-open="vm.showShareDialog"
-          on-close="vm.showShareDialog = false">
-        </annotation-share-dialog>
-        <annotation-action-button
-        icon="'h-icon-bookmark'"
-        is-disabled="vm.isDeleted()"
-        label="'Save As Flashcard'"
-        on-click="vm.addFlashcard()">
-        </annotation-action-button>
-      </span>
-      <span ng-if="vm.canFlag()">
-        <annotation-action-button
-         icon="'h-icon-annotation-flag'"
-         is-disabled="vm.isDeleted()"
-         label="'Report this annotation to the moderators'"
-         ng-if="!vm.isFlagged()"
-         on-click="vm.flag()"
-        ></annotation-action-button>
-        <annotation-action-button
-         icon="'h-icon-annotation-flag annotation--flagged'"
-         is-disabled="vm.isDeleted()"
-         label="'Annotation has been reported to the moderators'"
-         ng-if="vm.isFlagged()"
-        ></annotation-action-button>
-      </span>
     </div>
   </footer>
 </div>
