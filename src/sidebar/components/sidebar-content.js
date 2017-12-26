@@ -199,7 +199,7 @@ function SidebarContentController($rootScope,
         }
 
         if (typeof $rootScope._types === 'undefined') {
-            store.types().then(function (result) {
+            store.types({id: settings.services[0].data.task_id}).then(function (result) {
                 $rootScope._types = {}
                 for (var i = 0; i < result.length; i++) {
                     var type = result[i];
