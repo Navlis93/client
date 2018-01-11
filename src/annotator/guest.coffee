@@ -256,16 +256,6 @@ module.exports = class Guest extends Delegator
         color = anchor.annotation.color  
         highlights = highlighter.highlightRange(normedRange,'annotator-hl', color)
 
-        # make sure that spaces inbetween elements are handled correctly
-        if not normedRange.commonAncestor.oldWhiteSpace?
-          normedRange.commonAncestor.oldWhiteSpace = [normedRange.commonAncestor.style.whiteSpace]
-        window.requestAnimationFrame( ->
-          if normedRange.commonAncestor.oldWhiteSpace?
-            normedRange.commonAncestor.style.whiteSpace = normedRange.commonAncestor.oldWhiteSpace[0]
-            normedRange.commonAncestor.oldWhiteSpace = undefined
-        )
-        normedRange.commonAncestor.style.whiteSpace = "pre"
-
         $(highlights).data('annotation', anchor.annotation)
         anchor.highlights = highlights
         return anchor

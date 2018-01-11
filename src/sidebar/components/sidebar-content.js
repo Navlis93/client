@@ -199,18 +199,22 @@ function SidebarContentController($rootScope,
 
     if(typeof $rootScope._types === 'undefined'){
         store.types().then(function(result){
-        $rootScope._types = {}
-        for(var i=0; i < result.length; i++){
-          var group = result[i];
-          var groupId = group.id;
-          var types = group.entities;
-          $rootScope._types[groupId] = types;
-        }
-        bridge.call('loadTypes', $rootScope._types[groups.focused().id] || []);
-        _load()
+          $rootScope._types = {}
+          for(var i=0; i < result.length; i++){
+            var group = result[i];
+            var groupId = group.id;
+            var types = group.entities;
+            $rootScope._types[groupId] = types;
+          }
+          if (groups.focused()) {
+            bridge.call('loadTypes', $rootScope._types[groups.focused().id] || []);
+          }
+          _load()
         })
     }else{
-        bridge.call('loadTypes', $rootScope._types[groups.focused().id] || []);
+        if (groups.focused()) {
+          bridge.call('loadTypes', $rootScope._types[groups.focused().id] || []);
+        }
         _load()
     }
 

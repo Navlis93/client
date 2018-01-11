@@ -24,11 +24,25 @@ exports.highlightRange = (normedRange, cssClass='annotator-hl', color='') ->
   # but better than breaking table layouts.
   nodes = $(normedRange.textNodes()).filter((i) -> not white.test @nodeValue)
 
-  return nodes.wrap(hl).parent().toArray()
+  res = nodes.wrap(hl).parent().toArray()
+  refreshSpaces(normedRange.commonAncestor)
+  return res
 
+
+refreshSpaces = (element) ->
+  # make sure that spaces inbetween elements are handled correctly
+  if not element.oldWhiteSpace?
+    element.oldWhiteSpace = [element.style.whiteSpace]
+  window.requestAnimationFrame( ->
+    if element.oldWhiteSpace?
+      element.style.whiteSpace = element.oldWhiteSpace[0]
+      element.oldWhiteSpace = undefined
+  )
+  element.style.whiteSpace = "pre"
 
 exports.removeHighlights = (highlights) ->
   for h in highlights when h.parentNode?
+    refreshSpaces(h.parentNode)
     $(h).replaceWith(h.childNodes)
 
 
