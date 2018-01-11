@@ -201,13 +201,16 @@ function SidebarContentController($rootScope,
         store.types().then(function(result){
         $rootScope._types = {}
         for(var i=0; i < result.length; i++){
-          var type = result[i];
-          $rootScope._types[type.id] = type;
+          var group = result[i];
+          var groupId = group.id;
+          var types = group.entities;
+          $rootScope._types[groupId] = types;
         }
-        bridge.call('loadTypes', result);
+        bridge.call('loadTypes', $rootScope._types[groups.focused().id] || []);
         _load()
         })
     }else{
+        bridge.call('loadTypes', $rootScope._types[groups.focused().id] || []);
         _load()
     }
 
