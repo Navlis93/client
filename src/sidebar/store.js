@@ -181,18 +181,6 @@ function store($http, $q, auth, settings) {
     },
     links: apiCall('links'),
     types: apiCall('annotation.types'),
-    // Added translate API to show word translation
-    translate: function translate(word) {
-                return $http.post("http://api.linalgo.com/v0/gtranslate",
-                                {'q': word,
-                                'source': 'en',
-                                'target': 'zh',
-                                'format': 'text'})
-                        .then(function (response) {
-                          console.log('response -- ', response);
-                          return response.data.translatedText;
-                        })
-                },
     flashcard: {
         add: function add(flashcard) {
             return $http.post("http://api.linalgo.com/v0/flashcards", flashcard)

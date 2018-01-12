@@ -7,7 +7,7 @@ $ = require('jquery')
 # cssClass - A CSS class to use for the highlight (default: 'annotator-hl')
 #
 # Returns an array of highlight Elements.
-exports.highlightRange = (normedRange, cssClass='annotator-hl', color='') ->
+exports.highlightRange = (normedRange, cssClass='annotator-hl', color='', replace=undefined, annotation=undefined) ->
   white = /^\s*$/
 
   # A custom element name is used here rather than `<span>` to reduce the
@@ -23,7 +23,14 @@ exports.highlightRange = (normedRange, cssClass='annotator-hl', color='') ->
   # may be the odd abandoned whitespace node in a paragraph that is skipped
   # but better than breaking table layouts.
   nodes = $(normedRange.textNodes()).filter((i) -> not white.test @nodeValue)
+  if annotation?
+    annotation.originals = nodes
 
+  if replace
+    newNode = $(document.createTextNode(replace))
+    nodes.first().replaceWith(newNode)
+    nodes.slice(1).remove()
+    nodes = newNode
   res = nodes.wrap(hl).parent().toArray()
   refreshSpaces(normedRange.commonAncestor)
   return res
@@ -40,10 +47,13 @@ refreshSpaces = (element) ->
   )
   element.style.whiteSpace = "pre"
 
-exports.removeHighlights = (highlights) ->
+exports.removeHighlights = (highlights, originals) ->
   for h in highlights when h.parentNode?
     refreshSpaces(h.parentNode)
-    $(h).replaceWith(h.childNodes)
+    if originals?
+      $(h).replaceWith(originals)
+    else
+      $(h).replaceWith(h.childNodes)
 
 
 # Get the bounding client rectangle of a collection in viewport coordinates.

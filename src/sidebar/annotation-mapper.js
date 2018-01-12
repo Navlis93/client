@@ -12,16 +12,18 @@ function getExistingAnnotation(annotationUI, id) {
 
 // Wraps the annotation store to trigger events for the CRUD actions
 // @ngInject
-function annotationMapper($rootScope, annotationUI, store, bridge) {
+function annotationMapper($rootScope, annotationUI, store, bridge, groups) {
   function loadAnnotations(annotations, replies) {
     annotations = annotations.concat(replies || []);
     var loaded = [];
     function _load(){
           annotations.forEach(function (annotation) {
+            annotation.display_options = {};
             if(annotation.type_id){
               var type = $rootScope._types[annotation.type_id];
               if (type){
                 annotation.color = type.color;
+                annotation.type_name = type.type_name;
               }
             }
             else{

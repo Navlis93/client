@@ -29,7 +29,10 @@ function formatAnnot(ann) {
       document: ann.document,
       target: ann.target,
       uri: ann.uri,
-      color:ann.color
+      color:ann.color,
+      text:ann.text,
+      type_name: ann.type_name,
+      display_options: ann.display_options,
     },
   };
 }

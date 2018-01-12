@@ -28,7 +28,7 @@ function updateModel(annotation, changes, permissions) {
 function AnnotationController(
   $document, $rootScope, $scope, $timeout, $window, analytics, annotationUI,
   annotationMapper, drafts, flash, features, groups, permissions, serviceUrl,
-  session, settings, store, streamer) {
+  session, settings, store, streamer, typeUtils) {
 
   var self = this;
   var newlyCreatedByHighlightButton;
@@ -135,16 +135,19 @@ function AnnotationController(
             self.edit();
         }
     }
-    $scope.data = {annotation_type: self.annotation.type_id};
-
-    if (getAnnoTypeName(self.annotation.type_id) == 'translate' && isNew(self.annotation)) {
-      var translated = updateTranslationText(); //TODO : get translation language from user profile
-      translated.then(function(){
-        saveNewHighlight();
-      });
-    }
-    else if (getAnnoTypeName(self.annotation.type_id) == 'question' && isNew(self.annotation)) {
-      self.edit();  //open the edit comment option to add question
+    var typeName = getAnnoTypeName(self.annotation.type_id);
+    if (typeUtils.handlers[typeName]) {
+      typeUtils.handlers[typeName].call(self.annotation, function (err) {
+        // TODO: error handling
+        if (err) {
+          saveNewHighlight();
+          return;
+        }
+        if (self.annotation.display_options.edit)
+          self.edit();
+        else
+          saveNewHighlight();
+      })
     }
     else {
       saveNewHighlight();
@@ -161,20 +164,6 @@ function AnnotationController(
           return type.type_name;
         }
     }
-  }
-
-  /**
-   *  Get the translation of the highlighted text.
-   *  Update the annotation text with translation.
-   */
-  function updateTranslationText() {
-    // console.log("self.annotation.text -- ", self.quote());
-    var translatedVal = store.translate(self.quote());
-    return translatedVal.then(function (result) {
-      // console.log('result ', result);
-      self.annotation.text = result;
-      return;
-    });
   }
 
   /** Save this annotation if it's a new highlight.

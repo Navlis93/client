@@ -12,6 +12,7 @@ highlighter = require('./highlighter')
 rangeUtil = require('./range-util')
 selections = require('./selections')
 xpathRange = require('./anchoring/range')
+typeUtils = require('../shared/types.js')
 
 animationPromise = (fn) ->
   return new Promise (resolve, reject) ->
@@ -253,8 +254,8 @@ module.exports = class Guest extends Delegator
       return animationPromise ->
         range = xpathRange.sniff(anchor.range)
         normedRange = range.normalize(root)
-        color = anchor.annotation.color  
-        highlights = highlighter.highlightRange(normedRange,'annotator-hl', color)
+        color = anchor.annotation.color
+        highlights = highlighter.highlightRange(normedRange,'annotator-hl', color, anchor.annotation.text if anchor.annotation.display_options.replace?, anchor.annotation)
 
         $(highlights).data('annotation', anchor.annotation)
         anchor.highlights = highlights
@@ -285,6 +286,17 @@ module.exports = class Guest extends Delegator
 
       return anchors
 
+    applyTypePromise = (anchor) ->
+      return new Promise (resolve, reject) ->
+        typeName = anchor.annotation.type_name
+        if typeUtils.handlers[typeName]
+          typeUtils.handlers[typeName].call(anchor.annotation, (err) -> 
+            return reject(err) if err?
+            resolve(anchor)
+          )
+        else
+          resolve(anchor)
+
     # Remove all the anchors for this annotation from the instance storage.
     for anchor in self.anchors.splice(0, self.anchors.length)
       if anchor.annotation is annotation
@@ -307,7 +319,9 @@ module.exports = class Guest extends Delegator
 
     # Anchor any targets of this annotation that are not anchored already.
     for target in annotation.target when target not in anchoredTargets
-      anchor = locate(target).then(highlight)
+      anchor = locate(target)
+        .then(applyTypePromise)
+        .then(highlight)
       anchors.push(anchor)
 
     return Promise.all(anchors).then(sync)
@@ -327,12 +341,14 @@ module.exports = class Guest extends Delegator
 
     unhighlight = Array::concat(unhighlight...)
     raf =>
-      highlighter.removeHighlights(unhighlight)
+      highlighter.removeHighlights(unhighlight, annotation.originals)
       this.plugins.BucketBar?.update()
 
   createAnnotation: (annotation = {}) ->
     self = this
     root = @element[0]
+
+    annotation.display_options ?= {}
 
     ranges = @selectedRanges ? []
     @selectedRanges = null
@@ -394,7 +410,10 @@ module.exports = class Guest extends Delegator
   deleteAnnotation: (annotation) ->
     if annotation.highlights?
       for h in annotation.highlights when h.parentNode?
-        $(h).replaceWith(h.childNodes)
+        if (annotation.originals)
+          $(h).replaceWith(originals)
+        else
+          $(h).replaceWith(h.childNodes)
 
     this.publish('annotationDeleted', [annotation])
     annotation
