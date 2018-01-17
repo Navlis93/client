@@ -219,6 +219,7 @@ module.exports = angular.module('h', [
   .value('ExcerptOverflowMonitor', require('./util/excerpt-overflow-monitor'))
   .value('VirtualThreadList', require('./virtual-thread-list'))
   .value('random', require('./util/random'))
+  .value('typeUtils', require('../shared/types'))
   .value('raven', require('./raven'))
   .value('serviceConfig', serviceConfig)
   .value('settings', settings)

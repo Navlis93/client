@@ -29,6 +29,7 @@ function formatAnnot(ann) {
       document: ann.document,
       target: ann.target,
       uri: ann.uri,
+      type_action: ann.type_action,
       color:ann.color
     },
   };

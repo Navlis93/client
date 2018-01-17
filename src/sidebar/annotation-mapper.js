@@ -18,10 +18,12 @@ function annotationMapper($rootScope, annotationUI, store, bridge) {
     var loaded = [];
     function _load(){
           annotations.forEach(function (annotation) {
+            annotation.display_options = {};
             if(annotation.type_id){
               var type = $rootScope._types[annotation.type_id];
               if (type){
                 annotation.color = type.color;
+                annotation.type_action = type.action;
               }
             }
             else{

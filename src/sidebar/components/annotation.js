@@ -26,9 +26,9 @@ function updateModel(annotation, changes, permissions) {
 
 // @ngInject
 function AnnotationController(
-  $document, $rootScope, $scope, $timeout, $window, analytics, annotationUI,
+  $document, $rootScope, $scope, $injector, $timeout, $window, analytics, annotationUI,
   annotationMapper, drafts, flash, features, groups, permissions, serviceUrl,
-  session, settings, store, streamer) {
+  session, settings, store, streamer, typeUtils) {
 
   var self = this;
   var newlyCreatedByHighlightButton;
@@ -136,46 +136,19 @@ function AnnotationController(
         }
     }
     $scope.data = {annotation_type: self.annotation.type_id};
-
-    if (getAnnoTypeName(self.annotation.type_id) == 'translate' && isNew(self.annotation)) {
-      var translated = updateTranslationText(); //TODO : get translation language from user profile
-      translated.then(function(){
-        saveNewHighlight();
-      });
-    }
-    else if (getAnnoTypeName(self.annotation.type_id) == 'question' && isNew(self.annotation)) {
-      self.edit();  //open the edit comment option to add question
-    }
-    else {
-      saveNewHighlight();
-    }
-  }
-
-
-
-  function getAnnoTypeName(type_id) {
-    var types = self.getAvailableTypes();
-    for(var i in types) {
-        var type = types[i];
-        if (type.id === type_id) {
-          return type.type_name;
+    typeUtils.handleType($injector, self, self.annotation.type_action, function (err) {
+        // TODO: error handling
+        if (err) {
+            saveNewHighlight();
+            return;
         }
-    }
+        if (self.annotation.display_options.edit)
+            self.edit();
+        else
+            saveNewHighlight();
+    })
   }
 
-  /**
-   *  Get the translation of the highlighted text.
-   *  Update the annotation text with translation.
-   */
-  function updateTranslationText() {
-    // console.log("self.annotation.text -- ", self.quote());
-    var translatedVal = store.translate(self.quote());
-    return translatedVal.then(function (result) {
-      // console.log('result ', result);
-      self.annotation.text = result;
-      return;
-    });
-  }
 
   /** Save this annotation if it's a new highlight.
    *
@@ -559,6 +532,11 @@ function AnnotationController(
 
   this.isReply = function () {
     return isReply(self.annotation);
+  };
+
+  this.isNew = function () {
+    console.log(this.annotation.id)
+    return isNew(self.annotation);
   };
 
   this.incontextLink = function () {

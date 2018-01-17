@@ -12,6 +12,7 @@ highlighter = require('./highlighter')
 rangeUtil = require('./range-util')
 selections = require('./selections')
 xpathRange = require('./anchoring/range')
+typeUtils = require('../shared/types.js')
 
 animationPromise = (fn) ->
   return new Promise (resolve, reject) ->
@@ -253,7 +254,7 @@ module.exports = class Guest extends Delegator
       return animationPromise ->
         range = xpathRange.sniff(anchor.range)
         normedRange = range.normalize(root)
-        color = anchor.annotation.color  
+        color = anchor.annotation.color
         highlights = highlighter.highlightRange(normedRange,'annotator-hl', color)
 
         $(highlights).data('annotation', anchor.annotation)
@@ -285,6 +286,14 @@ module.exports = class Guest extends Delegator
 
       return anchors
 
+    applyTypePromise = (anchor) ->
+      return new Promise (resolve, reject) ->
+        typeAction = anchor.annotation.type_action
+        typeUtils.handleType(undefined, anchor, typeAction, (err) -> 
+          return reject(err) if err?
+          resolve(anchor)
+        )
+
     # Remove all the anchors for this annotation from the instance storage.
     for anchor in self.anchors.splice(0, self.anchors.length)
       if anchor.annotation is annotation
@@ -307,7 +316,9 @@ module.exports = class Guest extends Delegator
 
     # Anchor any targets of this annotation that are not anchored already.
     for target in annotation.target when target not in anchoredTargets
-      anchor = locate(target).then(highlight)
+      anchor = locate(target)
+        # .then(applyTypePromise)
+        .then(highlight)
       anchors.push(anchor)
 
     return Promise.all(anchors).then(sync)
@@ -333,6 +344,12 @@ module.exports = class Guest extends Delegator
   createAnnotation: (annotation = {}) ->
     self = this
     root = @element[0]
+
+    annotation.display_options ?= {}
+    type = @types.filter((x) ->
+      x.id == annotation.type_id
+    )
+    annotation.type_action = type[0].action if type.length
 
     ranges = @selectedRanges ? []
     @selectedRanges = null
