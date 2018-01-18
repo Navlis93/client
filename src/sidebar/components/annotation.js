@@ -139,13 +139,16 @@ function AnnotationController(
     typeUtils.handleType($injector, self, self.annotation.type_action, function (err) {
         // TODO: error handling
         if (err) {
+            self.annotation.display_options.edit = false;
             saveNewHighlight();
             return;
         }
-        if (self.annotation.display_options.edit)
+        if (self.annotation.display_options.edit) {
+            self.annotation.display_options.edit = false;
             self.edit();
-        else
+        } else {
             saveNewHighlight();
+        }
     })
   }
 
@@ -535,7 +538,6 @@ function AnnotationController(
   };
 
   this.isNew = function () {
-    console.log(this.annotation.id)
     return isNew(self.annotation);
   };
 

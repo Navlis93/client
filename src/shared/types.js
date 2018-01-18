@@ -10,7 +10,6 @@ function getParamNames(func) {
 module.exports = {
     handlers: {
         comment: function(cb) {
-            console.log(JSON.stringify(this))
             if (this.isNew()) {
                 this.annotation.display_options.edit = true;
                 this.annotation.color = '444444'
