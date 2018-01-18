@@ -123,6 +123,29 @@ if (shouldUseOAuth()) {
   authService = require('./auth');
 }
 
+// @ngInject
+function configureOAuth($httpProvider) {
+  $httpProvider.interceptors.push(function($q) {
+    return {
+      'request': function(config) {
+        if (config.headers.Authorization)
+          return config;
+        var url = config.url;
+        if (typeof url !== 'string' && !(url instanceof String))
+          return config;
+        // if (!url.startsWith("/") && !url.startsWith(settings.apiUrl))
+        //   return config;
+        // TODO: get from auth service
+        var token = window.localStorage.getItem('id_token')
+        if (token) {
+          config.headers.Authorization = "Bearer " + token;
+        }
+        return config;
+      }
+    }
+  });
+}
+
 module.exports = angular.module('h', [
   // Angular addons which export the Angular module name
   // via module.exports
@@ -227,6 +250,7 @@ module.exports = angular.module('h', [
   .value('urlEncodeFilter', require('./filter/url').encode)
 
   .config(configureHttp)
+  .config(configureOAuth)
   .config(configureLocation)
   .config(configureRoutes)
   .config(configureToastr)
