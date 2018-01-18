@@ -30,6 +30,7 @@ function formatAnnot(ann) {
       target: ann.target,
       uri: ann.uri,
       type_action: ann.type_action,
+      type_name: ann.type_name,
       color:ann.color
     },
   };

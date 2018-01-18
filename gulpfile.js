@@ -31,6 +31,8 @@ var STYLE_DIR = 'build/styles';
 var FONTS_DIR = 'build/fonts';
 var IMAGES_DIR = 'build/images';
 var TEMPLATES_DIR = 'src/sidebar/templates';
+var ANNOTATION_TEMPLATE_DIR = 'src/templates';
+var ANNOTATION_TEMPLATE_DEST_DIR = 'build/templates';
 
 // LiveReloadServer instance for sending messages to connected
 // development clients
@@ -203,7 +205,7 @@ gulp.task('watch-images', ['build-images'], function () {
 });
 
 gulp.task('watch-templates', function () {
-  gulp.watch(TEMPLATES_DIR + '/*.html', function (file) {
+  gulp.watch([TEMPLATES_DIR + '/*.html', ANNOTATION_TEMPLATE_DEST_DIR + '/*.html'], function (file) {
     liveReloadServer.notifyChanged([file.path]);
   });
 });
@@ -341,7 +343,8 @@ gulp.task('serve-package', function () {
 gulp.task('build', ['build-js',
                     'build-css',
                     'build-fonts',
-                    'build-images'],
+                    'build-images',
+                    'build-templates'],
           generateManifest);
 
 gulp.task('watch', ['serve-package',
@@ -384,6 +387,11 @@ gulp.task('test', function (callback) {
 gulp.task('test-watch', function (callback) {
   runKarma('./src/karma.config.js', {}, callback);
 });
+
+gulp.task('build-templates', function () {
+  return gulp.src([ANNOTATION_TEMPLATE_DIR + '/*.html'])
+    .pipe(gulp.dest(ANNOTATION_TEMPLATE_DEST_DIR));
+})
 
 gulp.task('upload-sourcemaps', ['build-js'], function () {
   var uploadToSentry = require('./scripts/gulp/upload-to-sentry');

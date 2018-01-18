@@ -626,6 +626,11 @@ function AnnotationController(
     return self.group().public;
   };
 
+  this.getTemplateUrl = function () {
+    var templateName = 'annotation-' + this.annotation.type_name + '.html';
+    return '/static/build/templates/' + templateName;
+  }
+
   init();
 }
 
@@ -639,7 +644,7 @@ module.exports = {
     replyCount: '<',
     isCollapsed: '<',
   },
-  template: require('../templates/annotation.html'),
+  template: "<dynamic-template url='vm.getTemplateUrl()'></dynamic-template>",
 
   // Private helper exposed for use in unit tests.
   updateModel: updateModel,

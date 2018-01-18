@@ -350,6 +350,7 @@ module.exports = class Guest extends Delegator
       x.id == annotation.type_id
     )
     annotation.type_action = type[0].action if type.length
+    annotation.type_name = type[0].type_name if type.length
 
     ranges = @selectedRanges ? []
     @selectedRanges = null

@@ -211,6 +211,7 @@ module.exports = angular.module('h', [
   .directive('spinner', require('./directive/spinner'))
   .directive('statusButton', require('./directive/status-button'))
   .directive('windowScroll', require('./directive/window-scroll'))
+  .directive('dynamicTemplate', require('./directive/dynamic-template'))
 
   .service('analytics', require('./analytics'))
   .service('annotationMapper', require('./annotation-mapper'))
