@@ -19,6 +19,7 @@ function annotationMapper($rootScope, annotationUI, store, bridge) {
     function _load(){
           annotations.forEach(function (annotation) {
             annotation.display_options = {};
+            annotation.id = annotation.id.toString();
             if(annotation.type_id){
               var type = $rootScope._types[annotation.type_id];
               if (type){

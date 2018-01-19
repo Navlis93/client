@@ -45,6 +45,7 @@ function AnnotationController(
     }
 
     return saved.then(function (savedAnnot) {
+      savedAnnot.id = savedAnnot.id.toString();
 
       var event;
 
