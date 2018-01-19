@@ -63,7 +63,7 @@ function groups(localStorage, serviceUrl, session, $rootScope, $http) {
     if (focusedGroup) {
       return focusedGroup;
     }
-    var fromStorage = get(localStorage.getItem(STORAGE_KEY));
+    var fromStorage = get(JSON.parse(localStorage.getItem(STORAGE_KEY)));
     if (fromStorage) {
       focusedGroup = fromStorage;
       return focusedGroup;
@@ -77,7 +77,7 @@ function groups(localStorage, serviceUrl, session, $rootScope, $http) {
     var g = get(id);
     if (g) {
       focusedGroup = g;
-      localStorage.setItem(STORAGE_KEY, g.id);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(g.id));
       if (prevFocused.id !== g.id) {
         $rootScope.$broadcast(events.GROUP_FOCUSED, g.id);
       }
