@@ -9,6 +9,9 @@ function getParamNames(func) {
 }
 module.exports = {
     handlers: {
+        highlight: function() {
+            // This special type doesn't open the sidebar
+        },
         comment: function(cb) {
             if (this.isNew()) {
                 this.annotation.display_options.edit = true;
