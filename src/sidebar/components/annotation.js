@@ -95,6 +95,7 @@ function AnnotationController(
 
     /** True if the 'Share' dialog for this annotation is currently open. */
     self.showShareDialog = false;
+    self.annotation.display_options = self.annotation.display_options || {};
 
     /**
       * `true` if this AnnotationController instance was created as a result of
