@@ -1,12 +1,22 @@
 'use strict';
 
+var getTemplateUrl = function(name) {
+  var templateName = 'annotation-' + name + '.html';
+  return '/static/build/templates/' + templateName;
+}
+
 module.exports = ["$http", "$templateCache", "$compile", "$parse", function($http, $templateCache, $compile, $parse) {
   return {
     restrict: 'E',
     link: function(scope , iElement, iAttrs) {
-      var url = $parse(iAttrs.url)(scope);
-      $http.get(url, {cache: $templateCache}).success(function(tplContent){
+      var name = $parse(iAttrs.name)(scope);
+      var url = getTemplateUrl(name);
+      var cb = function(response){
+        var tplContent = response.data;
         iElement.replaceWith($compile(tplContent)(scope));
+      };
+      $http.get(url, {cache: $templateCache}).then(cb, function(error) {
+        return $http.get(getTemplateUrl('default'), {cache: $templateCache}).then(cb);
       });
     }
   }
