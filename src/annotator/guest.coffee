@@ -163,6 +163,11 @@ module.exports = class Guest extends Delegator
     this.subscribe 'typesLoaded', (types) =>
       this.setTypes(types)
 
+    this.subscribe 'annotationRefreshed', (annotation) =>
+      console.log("#2SADOINK")
+      this.detach(annotation)
+      this.anchor(annotation)
+
   _connectAnnotationUISync: (crossframe) ->
     crossframe.on 'focusAnnotations', (tags=[]) =>
       for anchor in @anchors when anchor.highlights?
@@ -255,7 +260,11 @@ module.exports = class Guest extends Delegator
         range = xpathRange.sniff(anchor.range)
         normedRange = range.normalize(root)
         color = anchor.annotation.color
-        highlights = highlighter.highlightRange(normedRange,'annotator-hl', color)
+        annotationId = anchor.annotation.id
+        replace = undefined
+        if anchor.annotation.type_action == "replace"
+          replace = anchor.annotation.text
+        highlights = highlighter.highlightRange(normedRange,'annotator-hl', color, annotationId, replace)
 
         $(highlights).data('annotation', anchor.annotation)
         anchor.highlights = highlights
@@ -304,7 +313,7 @@ module.exports = class Guest extends Delegator
           anchoredTargets.push(anchor.target)
         else if anchor.highlights?
           # These highlights are no longer valid and should be removed.
-          deadHighlights = deadHighlights.concat(anchor.highlights)
+          deadHighlights = deadHighlights.concat([anchor.highlights, anchor.annotation.id])
           delete anchor.highlights
           delete anchor.range
       else
@@ -330,13 +339,13 @@ module.exports = class Guest extends Delegator
 
     for anchor in @anchors
       if anchor.annotation is annotation
-        unhighlight.push(anchor.highlights ? [])
+        for i in anchor.highlights
+          unhighlight.push([i, anchor.annotation.id])
       else
         anchors.push(anchor)
 
     this.anchors = anchors
 
-    unhighlight = Array::concat(unhighlight...)
     raf =>
       highlighter.removeHighlights(unhighlight)
       this.plugins.BucketBar?.update()
@@ -381,7 +390,7 @@ module.exports = class Guest extends Delegator
 
     targets.then(-> self.publish('beforeAnnotationCreated', [annotation]))
     targets.then(-> self.anchor(annotation))
-    @crossframe?.call('showSidebar') unless annotation.type_name == 'highlight'
+    @crossframe?.call('showSidebar') unless annotation.type_action == 'highlight'
     annotation
 
   createHighlight: ->

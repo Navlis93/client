@@ -7,7 +7,7 @@ $ = require('jquery')
 # cssClass - A CSS class to use for the highlight (default: 'annotator-hl')
 #
 # Returns an array of highlight Elements.
-exports.highlightRange = (normedRange, cssClass='annotator-hl', color='') ->
+exports.highlightRange = (normedRange, cssClass='annotator-hl', color='', annotationId='', replace=undefined) ->
   white = /^\s*$/
 
   # A custom element name is used here rather than `<span>` to reduce the
@@ -16,7 +16,7 @@ exports.highlightRange = (normedRange, cssClass='annotator-hl', color='') ->
   else
     style = ''
   # likelihood of highlights being hidden by page styling.
-  hl = $("<hypothesis-highlight class='#{cssClass}' #{style}></hypothesis-highlight>")
+  hl = $("<hypothesis-highlight class='#{cssClass} highlight-#{annotationId}' #{style}></hypothesis-highlight>")
   # Ignore text nodes that contain only whitespace characters. This prevents
   # spans being injected between elements that can only contain a restricted
   # subset of nodes such as table rows and lists. This does mean that there
@@ -26,8 +26,19 @@ exports.highlightRange = (normedRange, cssClass='annotator-hl', color='') ->
 
   res = nodes.wrap(hl).parent().toArray()
   refreshSpaces(normedRange.commonAncestor)
+  addReplace(annotationId, replace) if replace?
   return res
 
+addReplace = (annotationId, replace) ->
+  styleId = "#style-highlight-#{annotationId}"
+  styleClass = ".highlight-#{annotationId}"
+  $(styleId).remove();
+  $("<style id='#{styleId}' type='text/css'> #{styleClass}{ text-decoration: line-through; } \n" +
+    " #{styleClass}::after{ content: '\u00a0#{replace}'; text-decoration: none; display: inline-block; } </style>").appendTo("head");
+
+removeReplace = (annotationId) ->
+  styleId = "#style-highlight-#{annotationId}"
+  $(styleId).remove();
 
 refreshSpaces = (element) ->
   # make sure that spaces inbetween elements are handled correctly
@@ -41,9 +52,12 @@ refreshSpaces = (element) ->
   element.style.whiteSpace = "pre"
 
 exports.removeHighlights = (highlights) ->
-  for h in highlights when h.parentNode?
+  for item in highlights when item[0].parentNode?
+    h = item[0]
+    annotationId = item[1]
     refreshSpaces(h.parentNode)
     $(h).replaceWith(h.childNodes)
+    removeReplace(annotationId) if annotationId?
 
 
 # Get the bounding client rectangle of a collection in viewport coordinates.

@@ -26,12 +26,15 @@ function formatAnnot(ann) {
   return {
     tag: ann.$tag,
     msg: {
+      id: ann.id,
+      display_options: ann.display_options,
       document: ann.document,
       target: ann.target,
       uri: ann.uri,
       type_action: ann.type_action,
       type_name: ann.type_name,
-      color:ann.color
+      color:ann.color,
+      text: ann.text,
     },
   };
 }

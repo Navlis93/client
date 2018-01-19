@@ -39,7 +39,7 @@ module.exports = {
             }
         },
         replace: function(cb) {
-            this.annotation.display_options.replace = true;
+            // This special type strokes the text and print the replacement afterwards
             if (this.isNew()) {
                 this.annotation.display_options.edit = true;
             }

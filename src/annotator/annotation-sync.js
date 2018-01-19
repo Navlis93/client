@@ -94,6 +94,12 @@ AnnotationSync.prototype._channelListeners = {
     this._emit('typesLoaded', types);
     return cb(null, types);
   },
+  'annotationRefreshed': function(body, cb) {
+    console.log("#$MIEMIEMIE")
+    var annotation = this._parse(body);
+    this._emit('annotationRefreshed', annotation);
+    cb(null, this._format(annotation));
+  },
 };
 
 // Handlers for events coming from this frame, to send them across the channel

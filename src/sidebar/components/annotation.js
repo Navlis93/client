@@ -453,6 +453,8 @@ function AnnotationController(
       drafts.remove(self.annotation);
 
       $rootScope.$broadcast(event, updatedModel);
+      console.log("#$aaaaaaaaa", events.ANNOTATION_REFRESHED)
+      $rootScope.$broadcast(events.ANNOTATION_REFRESHED, updatedModel);
     }).catch(function (err) {
       self.isSaving = false;
       self.edit();
