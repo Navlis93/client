@@ -57,22 +57,6 @@
                {{group.name}}
             </a>
           </div>
-          <div class="share-link-container" ng-click="$event.stopPropagation()" ng-if="!group.public">
-            <a class="share-link"
-               href="{{group.url}}"
-               target="_blank"
-               ng-click="vm.viewGroupActivity()">
-              View group activity and invite others
-            </a>
-          </div>
-        </div>
-        <!-- the 'Leave group' icon !-->
-        <div class="group-cancel-icon-container" ng-click="$event.stopPropagation()">
-          <i class="h-icon-cancel-outline btn--cancel"
-             ng-if="!group.public"
-             ng-click="vm.leaveGroup(group.id)"
-             title="Leave '{{group.name}}'"></i>
-        </div>
       </div>
     </li>
     <li ng-if="!vm.isThirdPartyUser()" class="dropdown-menu__row dropdown-menu__row--unpadded new-group-btn">

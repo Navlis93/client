@@ -146,12 +146,6 @@
         on-click="vm.reply()"
       ></annotation-action-button>
       <span class="annotation-share-dialog-wrapper">
-        <annotation-action-button
-         icon="'h-icon-annotation-share'"
-         is-disabled="vm.isDeleted()"
-         label="'Share'"
-         on-click="vm.showShareDialog = true"
-        ></annotation-action-button>
         <annotation-share-dialog
           group="vm.group()"
           uri="vm.incontextLink()"

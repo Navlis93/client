@@ -15,7 +15,6 @@ module.exports = {
         comment: function(cb) {
             if (this.isNew()) {
                 this.annotation.display_options.edit = true;
-                this.annotation.color = '444444'
             }
             cb();
         },
