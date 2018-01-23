@@ -2,10 +2,10 @@
 
 var getTemplateUrl = function(name) {
   var templateName = 'annotation-' + name + '.html';
-  return '/static/build/templates/' + templateName;
+  return 'build/templates/' + templateName;
 }
 
-module.exports = ["$http", "$templateCache", "$compile", "$parse", function($http, $templateCache, $compile, $parse) {
+module.exports = ["$http", "$templateCache", "$compile", "$parse", "settings", function($http, $templateCache, $compile, $parse, settings) {
   return {
     restrict: 'E',
     link: function(scope , iElement, iAttrs) {
@@ -16,7 +16,7 @@ module.exports = ["$http", "$templateCache", "$compile", "$parse", function($htt
         iElement.replaceWith($compile(tplContent)(scope));
       };
       $http.get(url, {cache: $templateCache}).then(cb, function(error) {
-        return $http.get(getTemplateUrl('default'), {cache: $templateCache}).then(cb);
+        return $http.get(settings.assetRoot + getTemplateUrl('default'), {cache: $templateCache}).then(cb);
       });
     }
   }

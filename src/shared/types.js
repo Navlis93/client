@@ -8,50 +8,6 @@ function getParamNames(func) {
   return result;
 }
 module.exports = {
-    handlers: {
-        highlight: function() {
-            // This special type doesn't open the sidebar
-        },
-        comment: function(cb) {
-            if (this.isNew()) {
-                this.annotation.display_options.edit = true;
-            }
-            cb();
-        },
-        translate: function($http, cb) {
-            var self = this;
-            if (self.isNew()) {
-                // Added translate API to show word translation
-                return $http.post("http://api.linalgo.com/v0/gtranslate", {
-                    'q': self.quote(),
-                    'source': 'en',
-                    'target': 'fr',
-                    'format': 'text'
-                }).then(function (response) {
-                    self.annotation.text = response.data.translatedText;
-                    cb();
-                }).catch(function (err) {
-                    cb(error);
-                })
-            }
-            else {
-                cb()
-            }
-        },
-        replace: function(cb) {
-            // This special type strokes the text and print the replacement afterwards
-            if (this.isNew()) {
-                this.annotation.display_options.edit = true;
-            }
-            cb();
-        },
-        question: function(cb) {
-            if (this.isNew()) {
-                this.annotation.display_options.edit = true;
-            }
-            cb();
-        },
-    },
     defaultInjector: {
         annotate: getParamNames,
         invoke: function(args, self, local) {
@@ -68,8 +24,9 @@ module.exports = {
         }
     },
     handleType: function(injector, controller, type, cb) {
+        var settings = require('./settings.js').jsonConfigsFrom(document);
         injector = injector || this.defaultInjector;
-        var handler = this.handlers[type];
+        var handler = settings.handlers[type];
         if (handler) {
             console.log("calling handler for type:", type)
             var params = injector.annotate(handler);
