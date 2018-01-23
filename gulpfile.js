@@ -257,6 +257,35 @@ function packageServerHostname() {
 
 var isFirstBuild = true;
 
+var defaultAssetRoot, defaultApiHostPort, defaultAuth0ClientId;
+
+var { version } = require('./package.json');
+
+var defaultSidebarAppUrl = process.env.SIDEBAR_APP_URL ?
+  `${process.env.SIDEBAR_APP_URL}` : 'https://hypothes.is/app.html';
+
+if (process.env.DEFAULT_ASSET_PREFIX) {
+  defaultAssetRoot = process.env.DEFAULT_ASSET_PREFIX;
+}
+else if (process.env.NODE_ENV === 'production') {
+  defaultAssetRoot = `https://cdn.hypothes.is/hypothesis/${version}/`;
+} else {
+  var prefix = process.env.DEFAULT_ASSET_PREFIX || `http://${packageServerHostname()}`
+  defaultAssetRoot = `http://cli.h.local/hypothesis/${version}/`;
+}
+
+if (process.env.DEFAULT_API_HOST_PORT) {
+  defaultApiHostPort = process.env.DEFAULT_API_HOST_PORT;
+} else {
+  defaultApiHostPort = '127.0.0.1:4008';
+}
+
+if (process.env.DEFAULT_AUTH0_CLIENT_ID) {
+  defaultAuth0ClientId = process.env.DEFAULT_AUTH0_CLIENT_ID;
+} else {
+  throw new Error('No client id provided');
+}
+
 /**
  * Generates the `build/boot.js` script which serves as the entry point for
  * the Hypothesis client.
@@ -264,22 +293,6 @@ var isFirstBuild = true;
  * @param {Object} manifest - Manifest mapping asset paths to cache-busted URLs
  */
 function generateBootScript(manifest) {
-  var { version } = require('./package.json');
-
-  var defaultSidebarAppUrl = process.env.SIDEBAR_APP_URL ?
-    `${process.env.SIDEBAR_APP_URL}` : 'https://hypothes.is/app.html';
-
-  var defaultAssetRoot;
-
-  if (process.env.DEFAULT_ASSET_PREFIX) {
-    defaultAssetRoot = process.env.DEFAULT_ASSET_PREFIX;
-  }
-  else if (process.env.NODE_ENV === 'production') {
-    defaultAssetRoot = `https://cdn.hypothes.is/hypothesis/${version}/`;
-  } else {
-    var prefix = process.env.DEFAULT_ASSET_PREFIX || `http://${packageServerHostname()}`
-    defaultAssetRoot = `http://cli.h.local/hypothesis/${version}/`;
-  }
 
   if (isFirstBuild) {
     gulpUtil.log(`Sidebar app URL: ${defaultSidebarAppUrl}`);
@@ -341,6 +354,8 @@ gulp.task('serve-package', function () {
 });
 
 gulp.task('build', ['build-js',
+                    'build-static',
+                    'build-hconfig',
                     'build-css',
                     'build-fonts',
                     'build-images',
@@ -391,6 +406,23 @@ gulp.task('test-watch', function (callback) {
 gulp.task('build-templates', function () {
   return gulp.src([ANNOTATION_TEMPLATE_DIR + '/*.html'])
     .pipe(gulp.dest(ANNOTATION_TEMPLATE_DEST_DIR));
+})
+
+gulp.task('build-static', function () {
+  return gulp.src(['./src/static/**'])
+    .pipe(gulp.dest('./build'));
+})
+
+if (process.env.DEFAULT_ASSET_PREFIX) {
+  defaultAssetRoot = process.env.DEFAULT_ASSET_PREFIX;
+}
+
+gulp.task('build-hconfig', function () {
+  return gulp.src(['./src/hconfig.js'])
+    .pipe(replace('__ASSET_ROOT__', defaultAssetRoot))
+    .pipe(replace('__API_HOST_PORT__', defaultApiHostPort))
+    .pipe(replace('__AUTH0_CLIENT_ID__', defaultAuth0ClientId))
+    .pipe(gulp.dest('./build/scripts'));
 })
 
 gulp.task('upload-sourcemaps', ['build-js'], function () {

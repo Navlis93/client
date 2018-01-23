@@ -2,7 +2,7 @@
 
 var getTemplateUrl = function(name) {
   var templateName = 'annotation-' + name + '.html';
-  return 'build/templates/' + templateName;
+  return 'templates/' + templateName;
 }
 
 module.exports = ["$http", "$templateCache", "$compile", "$parse", "settings", function($http, $templateCache, $compile, $parse, settings) {
