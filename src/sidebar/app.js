@@ -100,7 +100,7 @@ function configureHttp($httpProvider) {
 
 // @ngInject
 function setupHttp($http, streamer) {
-  $http.defaults.headers.common['X-Client-Id'] = streamer.clientId;
+  // $http.defaults.headers.common['X-Client-Id'] = streamer.clientId;
 }
 
 function processAppOpts() {

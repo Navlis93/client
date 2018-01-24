@@ -257,7 +257,7 @@ function packageServerHostname() {
 
 var isFirstBuild = true;
 
-var defaultAssetRoot, defaultApiHostPort, defaultAuth0ClientId;
+var defaultAssetRoot, defaultApiDomain, defaultApiUrl, defaultAuth0ClientId;
 
 var { version } = require('./package.json');
 
@@ -274,10 +274,16 @@ else if (process.env.NODE_ENV === 'production') {
   defaultAssetRoot = `http://cli.h.local/hypothesis/${version}/`;
 }
 
-if (process.env.DEFAULT_API_HOST_PORT) {
-  defaultApiHostPort = process.env.DEFAULT_API_HOST_PORT;
+if (process.env.DEFAULT_API_DOMAIN) {
+  defaultApiDomain = process.env.DEFAULT_API_DOMAIN;
 } else {
-  defaultApiHostPort = '127.0.0.1:4008';
+  defaultApiDomain = '127.0.0.1:4008';
+}
+
+if (process.env.DEFAULT_API_URL) {
+  defaultApiUrl = process.env.DEFAULT_API_URL;
+} else {
+  defaultApiUrl = 'http://127.0.0.1:4008/';
 }
 
 if (process.env.DEFAULT_AUTH0_CLIENT_ID) {
@@ -355,6 +361,7 @@ gulp.task('serve-package', function () {
 
 gulp.task('build', ['build-js',
                     'build-static',
+                    'build-app',
                     'build-hconfig',
                     'build-css',
                     'build-fonts',
@@ -420,9 +427,16 @@ if (process.env.DEFAULT_ASSET_PREFIX) {
 gulp.task('build-hconfig', function () {
   return gulp.src(['./src/hconfig.js'])
     .pipe(replace('__ASSET_ROOT__', defaultAssetRoot))
-    .pipe(replace('__API_HOST_PORT__', defaultApiHostPort))
+    .pipe(replace('__API_DOMAIN__', defaultApiDomain))
+    .pipe(replace('__API_URL__', defaultApiUrl))
     .pipe(replace('__AUTH0_CLIENT_ID__', defaultAuth0ClientId))
     .pipe(gulp.dest('./build/scripts'));
+})
+
+gulp.task('build-app', function () {
+  return gulp.src(['./src/app.html', './src/oauth_authenticator.html'])
+    .pipe(replace('__ASSET_ROOT__', defaultAssetRoot))
+    .pipe(gulp.dest('./build/'));
 })
 
 gulp.task('upload-sourcemaps', ['build-js'], function () {

@@ -28,9 +28,9 @@ module.exports = class Host extends Guest
       JSON.stringify(Object.assign({}, config, {sidebarAppUrl: undefined, pluginClasses: undefined }))
     )
     if config.sidebarAppUrl and '?' in config.sidebarAppUrl
-      sidebarAppSrc = config.sidebarAppUrl + '&' + configParam
+      sidebarAppSrc = config.sidebarAppUrl + '&a=1&' + configParam
     else
-      sidebarAppSrc = config.sidebarAppUrl + '?' + configParam
+      sidebarAppSrc = config.sidebarAppUrl + '?a=1&' + configParam
 
     # Create the iframe
     app = $('<iframe></iframe>')

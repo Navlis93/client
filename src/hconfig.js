@@ -1,6 +1,6 @@
 var staticUrl = '__ASSET_ROOT__'
-var apiUrl = 'http://__API_HOST_PORT__/'
-var hostPort = '__API_HOST_PORT__'
+var apiUrl = '__API_URL__'
+var domain = '__API_DOMAIN__'
 var oauthClientId = '__AUTH0_CLIENT_ID__'
 var handlers = {
   highlight: function () {
@@ -56,7 +56,7 @@ window.hypothesisConfig = function () {
     'handlers': handlers,
     'services': [{
       'apiUrl': apiUrl + 'api/',
-      'authority': hostPort
+      'authority': domain
     }]
   }
 }
