@@ -97,12 +97,6 @@ function HypothesisAppController(
    *   completes. For non-OAuth logins, always resolves immediately.
    */
   this.login = function () {
-    if (serviceConfig(settings)) {
-      // Let the host page handle the login request
-      bridge.call(bridgeEvents.LOGIN_REQUESTED);
-      return Promise.resolve();
-    }
-
     if (auth.login) {
       // OAuth-based login 😀
       return auth.login().then(() => {
@@ -111,6 +105,12 @@ function HypothesisAppController(
         flash.error(err.message);
       });
     } else {
+      if (serviceConfig(settings)) {
+        // Let the host page handle the login request
+        bridge.call(bridgeEvents.LOGIN_REQUESTED);
+        return Promise.resolve();
+      }
+
       // Legacy cookie-based login 😔.
       self.accountDialog.visible = true;
       scrollToView('login-form');
@@ -170,14 +170,24 @@ function HypothesisAppController(
     });
     drafts.discard();
 
-    if (serviceConfig(settings)) {
-      // Let the host page handle the signup request
-      bridge.call(bridgeEvents.LOGOUT_REQUESTED);
-      return;
+    if (auth.logout) {
+      // OAuth-based logout 😀
+      return auth.logout().then(() => {
+        session.reload();
+      }).catch((err) => {
+        flash.error(err.message);
+      });
+    } else {
+      if (serviceConfig(settings)) {
+        // Let the host page handle the signup request
+        bridge.call(bridgeEvents.LOGOUT_REQUESTED);
+        return;
+      }
+      // Legacy cookie-based login 😔.
+      this.accountDialog.visible = false;
+      session.logout();
+      return Promise.resolve();
     }
-
-    this.accountDialog.visible = false;
-    session.logout();
   };
 
   this.search = {

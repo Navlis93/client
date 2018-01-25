@@ -48,6 +48,7 @@ var handlers = {
 
 window.hypothesisConfig = function () {
   return {
+    'auth0': true,
     'oauthClientId': oauthClientId,
     'oauthEnabled': true,
     'assetRoot': staticUrl,
@@ -60,3 +61,5 @@ window.hypothesisConfig = function () {
     }]
   }
 }
+
+document.getElementsByClassName('js-hypothesis-config')[0].innerHTML = JSON.stringify(window.hypothesisConfig());

@@ -10,13 +10,14 @@ module.exports = ["$http", "$templateCache", "$compile", "$parse", "settings", f
     restrict: 'E',
     link: function(scope , iElement, iAttrs) {
       var name = $parse(iAttrs.name)(scope);
-      var url = getTemplateUrl(name);
+      var url = settings.assetRoot + getTemplateUrl(name);
       var cb = function(response){
         var tplContent = response.data;
         iElement.replaceWith($compile(tplContent)(scope));
       };
-      $http.get(url, {cache: $templateCache}).then(cb, function(error) {
-        return $http.get(settings.assetRoot + getTemplateUrl('default'), {cache: $templateCache}).then(cb);
+      $http({url: url, method: "GET", headers: {Authorization: undefined}}, {cache: $templateCache}).then(cb, function(error) {
+        return $http({url: settings.assetRoot + getTemplateUrl('default'), method: "GET", headers: {Authorization: undefined}},
+                     {cache: $templateCache}).then(cb);
       });
     }
   }

@@ -32,6 +32,7 @@ function configFrom(window_) {
     subFrameIdentifier: settings.hostPageSetting('subFrameIdentifier', {allowInBrowserExt: true}),
     oauthEndpoint: settings.hostPageSetting('oauthEndpoint', '/static/oauth_authenticator.html'),
     handlers: settings.hostPageSetting('handlers', {}),
+    auth0: settings.hostPageSetting('auth0', false),
   };
 }
 

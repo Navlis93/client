@@ -8,7 +8,7 @@ module.exports = {
   controllerAs: 'vm',
 
   //@ngInject
-  controller: function (bridge, serviceUrl, settings, $window) {
+  controller: function (bridge, serviceUrl, settings, $window, auth) {
     this.serviceUrl = serviceUrl;
 
     this.isThirdPartyUser = function() {
@@ -20,6 +20,9 @@ module.exports = {
         return false;
       }
       var service = serviceConfig(settings);
+      if (auth.logout) {
+        return true;
+      }
       if (service && !service.onLogoutRequestProvided) {
         return false;
       }

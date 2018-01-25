@@ -24,17 +24,18 @@ module.exports = {
         }
     },
     handleType: function(injector, controller, type, cb) {
-        var settings = require('./settings.js').jsonConfigsFrom(document);
+        var settings = window.hypothesisConfig();
         injector = injector || this.defaultInjector;
         var handler = settings.handlers[type];
         if (handler) {
-            console.log("calling handler for type:", type)
+            console.log("calling handler for type: ", type)
             var params = injector.annotate(handler);
             injector.invoke(params.concat([handler]), controller, {"cb": cb});
             if (params.indexOf("cb") === -1) {
                 cb();
             }
         } else {
+            console.log("handler not found for type: ", type)
             cb();
         }
     }

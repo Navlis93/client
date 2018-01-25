@@ -109,6 +109,10 @@ function processAppOpts() {
   }
 }
 
+function shouldUseAuth0() {
+  return settings.auth0;
+}
+
 function shouldUseOAuth() {
   if (serviceConfig(settings)) {
     return true;
@@ -117,7 +121,10 @@ function shouldUseOAuth() {
 }
 
 var authService;
-if (shouldUseOAuth()) {
+
+if (shouldUseAuth0()) {
+  authService = require('./oauth-auth0');
+} else if (shouldUseOAuth()) {
   authService = require('./oauth-auth');
 } else {
   authService = require('./auth');
@@ -128,7 +135,7 @@ function configureOAuth($httpProvider) {
   $httpProvider.interceptors.push(function($q) {
     return {
       'request': function(config) {
-        if (config.headers.Authorization)
+        if (config.headers.hasOwnProperty('Authorization'))
           return config;
         var url = config.url;
         if (typeof url !== 'string' && !(url instanceof String))
