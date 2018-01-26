@@ -359,7 +359,7 @@ module.exports = class Guest extends Delegator
       x.id == annotation.type_id
     )
     annotation.type_action = type[0].action if type.length
-    annotation.type_name = type[0].type_name if type.length
+    annotation.type_flashcard_type = type[0].flashcard_type if type.length
 
     ranges = @selectedRanges ? []
     @selectedRanges = null

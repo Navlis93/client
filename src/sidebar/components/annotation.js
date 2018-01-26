@@ -631,7 +631,7 @@ function AnnotationController(
   };
 
   this.getTemplate = function () {
-    return this.annotation.type_name;
+    return this.annotation.type_flashcard_type;
   }
 
   init();

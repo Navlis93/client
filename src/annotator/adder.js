@@ -269,7 +269,7 @@ function Adder(container, options) {
     for(var i = 0; i < types.length; i++){
         var type = types[i];
         var html = '<button title="'+ type.title + '" class="annotator-adder-actions__button js-annotate-btn h-icon-'
-                  + type.icon_name + '" data-type-id="' + type.id
+                  + type.icon_name + '" data-type-id="' + type.id + '" data-type-flashcard_type="' + type.flascard_type
                   + '" data-type-color="' + type.color + '" data-type-name="' + type.type_name + '" data-type-action="' + type.action + '">'
                   + '<span class="annotator-adder-actions__label" data-action="comment">' + type.title + '</span>'
                   + '</button>';

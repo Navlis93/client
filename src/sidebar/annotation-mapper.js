@@ -25,7 +25,7 @@ function annotationMapper($rootScope, annotationUI, store, bridge) {
               if (type){
                 annotation.color = type.color;
                 annotation.type_action = type.action;
-                annotation.type_name = type.type_name;
+                annotation.type_flashcard_type = type.flashcard_type;
               }
             }
             else{
