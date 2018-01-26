@@ -269,6 +269,8 @@ function auth($http, $window, flash, localStorage, random, settings) {
   // logout of the client, this clearCache() will need to clear the access
   // token and cancel any scheduled refresh token requests.
   function clearCache() {
+    authCode = undefined;
+    accessTokenPromise = null;
   }
 
   function logout() {
@@ -276,7 +278,7 @@ function auth($http, $window, flash, localStorage, random, settings) {
     localStorage.removeItem('access_token');
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
-    authCode = undefined;
+    this.clearCache();
     return new Promise(function(resolve, reject) {resolve();});
   }
 

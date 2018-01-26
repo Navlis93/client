@@ -30,8 +30,6 @@ module.exports = {
    */
   LOGOUT_REQUESTED: 'logoutRequested',
 
-  LOGOUT_FINISHED: 'logoutFinished',
-
   /**
    * The sidebar is asking the annotator to open the partner site profile page.
    */

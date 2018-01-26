@@ -174,6 +174,10 @@ function HypothesisAppController(
       // OAuth-based logout 😀
       return auth.logout().then(() => {
         session.reload();
+        $rootScope.$broadcast(events.USER_CHANGED, {
+          initialLoad: false,
+          userid: null,
+        });
       }).catch((err) => {
         flash.error(err.message);
       });
