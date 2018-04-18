@@ -52,11 +52,11 @@ window.hypothesisConfig = function () {
     'oauthClientId': oauthClientId,
     'oauthEnabled': true,
     'assetRoot': staticUrl,
-    'serviceUrl': apiUrl + 'api/',
+    'serviceUrl': apiUrl,
     'oauthEndpoint': staticUrl + 'oauth_authenticator.html',
     'handlers': handlers,
     'services': [{
-      'apiUrl': apiUrl + 'api/',
+      'apiUrl': apiUrl,
       'authority': domain
     }]
   }
