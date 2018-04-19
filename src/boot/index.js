@@ -15,7 +15,7 @@ var boot = require('./boot');
 var settings = require('../shared/settings').jsonConfigsFrom(document);
 
 boot(document, {
-  assetRoot: settings.assetRoot || '__ASSET_ROOT__',
+  assetRoot: '__ASSET_ROOT__',
   manifest: __MANIFEST__,
-  sidebarAppUrl: settings.sidebarAppUrl || '__SIDEBAR_APP_URL__',
+  sidebarAppUrl: '__SIDEBAR_APP_URL__',
 });
